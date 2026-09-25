@@ -3,12 +3,13 @@ import { RouterLink } from '@angular/router';
 import { I18n, fmt } from '../../core/i18n';
 import { StatsService } from '../../core/stats.service';
 import { ThemeService } from '../../core/theme.service';
+import { AuthButton } from '../../features/auth/auth-button';
 import { OpenStats } from '../../features/stats/open-stats';
 import { Icon } from './icon';
 
 @Component({
   selector: 'app-site-header',
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, AuthButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let t = i18n.t().nav;
@@ -31,6 +32,7 @@ import { Icon } from './icon';
         <button type="button" class="icon-btn" [attr.aria-label]="t.stats" (click)="openStats.open()">
           <app-icon name="chart" />
         </button>
+        <app-auth-button />
         <button type="button" class="icon-btn" (click)="theme.toggle()" [attr.aria-label]="theme.theme() === 'dark' ? t.toLight : t.toDark">
           <app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" />
         </button>

@@ -4,6 +4,7 @@ import { addDays, utcDay } from '../../core/dates';
 import { I18n, fmt } from '../../core/i18n';
 import { winRate } from '../../core/stats';
 import { StatsService } from '../../core/stats.service';
+import { AuthService } from '../../core/auth.service';
 import { Icon } from '../../shared/components/icon';
 
 const WEEKS = 12;
@@ -72,7 +73,7 @@ function mondayOf(day: string): string {
       <span class="cell won">✓</span> {{ t.won }} <span class="cell lost">✗</span> {{ t.lost }} <span class="cell none"></span> {{ t.none }}
     </p>
     <ng-content />
-    <p class="note muted">{{ t.local }}</p>
+    <p class="note muted">{{ auth.status() === 'signed-in' ? i18n.t().auth.synced : t.local }}</p>
   `,
   styles: `
     :host {
@@ -214,6 +215,7 @@ export class StatsDialog {
   protected readonly i18n = inject(I18n);
   protected readonly stats = inject(StatsService);
   protected readonly ref = inject(DialogRef);
+  protected readonly auth = inject(AuthService);
   protected readonly fmt = fmt;
 
   protected readonly rate = computed(() => winRate(this.stats.stats()));

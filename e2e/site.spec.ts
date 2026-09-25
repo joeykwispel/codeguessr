@@ -1,11 +1,13 @@
 import { expect, test } from '@playwright/test';
+import { setup } from './helpers';
 
 test('home page loads with a CSP and no console errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   page.on('pageerror', (e) => errors.push(e.message));
+  await setup(page);
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Puzzle #5' })).toBeVisible();
   await expect(page.locator('meta[http-equiv="Content-Security-Policy"]')).toHaveCount(1);
   expect(errors).toEqual([]);
 });

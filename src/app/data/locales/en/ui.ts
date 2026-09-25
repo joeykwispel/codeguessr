@@ -94,6 +94,25 @@ export const ui = {
     local: 'Stats are saved in this browser only.',
     close: 'Close'
   },
+  auth: {
+    signIn: 'Sign in',
+    title: 'Sync your stats',
+    why: 'Sign in with Google to keep your streak and stats in sync across your devices. Everything else works without an account.',
+    google: 'Continue with Google',
+    privacy: 'Only your stats are stored. Your name, email and picture come from Google and are only used to show who’s signed in.',
+    menu: 'Account',
+    signedInAs: 'Signed in as {name}',
+    signOut: 'Sign out',
+    signedOut: 'Signed out. Your stats stay on this device.',
+    expired: 'Your session ended, so you’re signed out. Your stats are still on this device.',
+    error: 'Sign-in didn’t work. You can keep playing and try again later.',
+    cancelled: 'Sign-in was cancelled.',
+    loading: 'Checking sign-in…',
+    syncing: 'Syncing your stats…',
+    synced: 'Stats synced across your devices.',
+    syncError: 'Couldn’t sync right now. It will try again next time.',
+    close: 'Close'
+  },
   notFound: {
     title: '404: term not found',
     text: 'This page doesn’t exist.',

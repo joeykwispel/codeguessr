@@ -25,6 +25,7 @@ function fakeClient(result: () => Promise<{ data: unknown; error: unknown }>) {
     gte: () => builder,
     lte: () => builder,
     order: () => builder,
+    retry: () => builder,
     abortSignal: () => builder,
     maybeSingle: () => {
       calls.count++;

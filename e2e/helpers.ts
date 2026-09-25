@@ -4,10 +4,13 @@ import type { Page } from '@playwright/test';
 export const TODAY = '2026-09-25';
 export const ANSWER = 'GraphQL';
 
-/** Freezes the clock on a fixed UTC day and blocks Supabase, so every test plays the bundled snapshot. */
+/**
+ * Freezes the clock on a fixed UTC day and stubs Supabase: the puzzles table answers with no rows (so the bundled
+ * snapshot is used) and everything else fails, like an unreachable server. Tests can add more specific routes after.
+ */
 export async function setup(page: Page, { day = TODAY, storage = {} as Record<string, unknown> } = {}) {
   await page.clock.setFixedTime(new Date(`${day}T10:00:00Z`));
-  await page.route(/supabase\.co/, (route) => route.abort());
+  await page.route(/supabase\.co/, (route) => (route.request().url().includes('/rest/v1/puzzles') ? route.fulfill({ json: [] }) : route.abort()));
   if (Object.keys(storage).length) {
     await page.addInitScript((entries) => {
       if (sessionStorage.getItem('seeded')) return;

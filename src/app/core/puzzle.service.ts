@@ -86,6 +86,8 @@ export class PuzzleService {
           .gte('date', from)
           .lte('date', to)
           .order('date')
+          // no built-in retries with backoff: the bundled snapshot is a faster fallback
+          .retry(false)
           .abortSignal(AbortSignal.timeout(TIMEOUT_MS));
         if (error) throw error;
         if (data?.length) return data as PuzzleSummary[];
@@ -100,7 +102,7 @@ export class PuzzleService {
   private async fetchRow(date: string): Promise<PuzzleRow | null> {
     const client = await this.supabase.get();
     if (!client) return null;
-    const { data, error } = await client.from('puzzles').select('*').eq('date', date).abortSignal(AbortSignal.timeout(TIMEOUT_MS)).maybeSingle();
+    const { data, error } = await client.from('puzzles').select('*').eq('date', date).retry(false).abortSignal(AbortSignal.timeout(TIMEOUT_MS)).maybeSingle();
     if (error) throw error;
     return (data as PuzzleRow | null) ?? null;
   }

@@ -22,9 +22,10 @@
     "check": "ngc -p tsconfig.app.json --noEmit && tsc -p tsconfig.spec.json --noEmit && tsc -p scripts/tsconfig.json --noEmit",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
-    "test:unit": "ng test --watch=false",
+    "test:unit": "ng test --watch=false && vitest run --config vitest.db.config.ts",
     "test:e2e": "playwright test",
-    "test": "npm run test:unit && npm run test:e2e"
+    "test": "npm run test:unit && npm run test:e2e",
+    "build:e2e": "ng build --configuration production,e2e && node scripts/postbuild.mjs"
   },
   "packageManager": "npm@11.19.0",
   "dependencies": {

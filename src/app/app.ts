@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, afterNextRender, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './core/auth.service';
+import { CloudSync } from './core/cloud-sync.service';
 import { I18n } from './core/i18n';
 import { SiteFooter } from './shared/components/site-footer';
 import { SiteHeader } from './shared/components/site-header';
@@ -50,4 +52,14 @@ import { SiteHeader } from './shared/components/site-header';
 })
 export class App {
   protected readonly i18n = inject(I18n);
+
+  constructor() {
+    // Optional sign-in and cloud sync start after the first render, so they never hold up the game.
+    const auth = inject(AuthService);
+    const sync = inject(CloudSync);
+    afterNextRender(() => {
+      auth.init();
+      sync.init();
+    });
+  }
 }

@@ -40,7 +40,8 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build
+      # Same app, pointed at a fake Supabase project that the tests answer themselves (sign-in, sync)
+      - run: npm run build:e2e
 
       - run: npx playwright install --with-deps chromium
 

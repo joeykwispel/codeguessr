@@ -22,8 +22,8 @@ test('win with the keyboard through the autocomplete', async ({ page }) => {
   await expect(page.getByRole('option', { name: ANSWER })).toHaveAttribute('aria-selected', 'true');
   await field.press('Enter');
   await expect(page.getByRole('heading', { name: 'You got it!' })).toBeVisible();
-  await expect(page.getByText('Solved in 1 of 6 turns.')).toBeVisible();
-  await expect(page.getByText(/resolvers can fetch data from anywhere/)).toBeVisible();
+  await expect(page.locator('app-result-panel').getByText('Solved in 1 of 6 turns.')).toBeVisible();
+  await expect(page.locator('app-result-panel').getByText(/resolvers can fetch data from anywhere/)).toBeVisible();
   // the finished game survives a reload
   await page.reload();
   await expect(page.getByRole('heading', { name: 'You got it!' })).toBeVisible();
@@ -35,19 +35,19 @@ test('lose after six wrong turns, with skips revealing clues', async ({ page }) 
   await page.getByRole('button', { name: /skip this turn/i }).click();
   for (const term of ['Rust', 'Go', 'PHP', 'Ruby']) await guess(page, term);
   await expect(page.getByRole('heading', { name: 'Out of turns' })).toBeVisible();
-  await expect(page.getByText('The answer was')).toContainText(ANSWER);
+  await expect(page.locator('app-result-panel').getByText('The answer was')).toContainText(ANSWER);
   await expect(page.getByText('Locked until your next turn')).toHaveCount(0);
 });
 
 test('accepts aliases and rejects unknown or repeated terms without using a turn', async ({ page }) => {
   await guess(page, 'Banana');
-  await expect(page.getByText(/isn’t in the term list/)).toBeVisible();
+  await expect(page.locator('#guess-error')).toContainText('isn’t in the term list');
   await expect(page.getByText('6 of 6 turns left')).toBeVisible();
 
   await guess(page, 'JS');
   await expect(page.getByRole('listitem').filter({ hasText: 'JavaScript' })).toContainText('wrong');
   await guess(page, 'javascript');
-  await expect(page.getByText('You already guessed javascript.')).toBeVisible();
+  await expect(page.locator('#guess-error')).toHaveText('You already guessed javascript.');
   await expect(page.getByText('5 of 6 turns left')).toBeVisible();
 });
 

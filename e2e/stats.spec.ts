@@ -20,7 +20,7 @@ test('a win updates the streak, the stats dialog and the share text', async ({ p
   await expect(page.getByRole('button', { name: /current streak: 2 days/i })).toBeVisible();
 
   await page.getByRole('button', { name: 'Share result' }).click();
-  await expect(page.getByText('Result copied to the clipboard.')).toBeVisible();
+  await expect(page.locator('app-share-button').getByText('Result copied to the clipboard.')).toBeVisible();
   // Windows stores line breaks on the clipboard as CRLF
   const text = (await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n');
   expect(text).toBe('Codeguessr #5 2/6 🔥2\n⬛🟩\ncodeguessr.joeyoosenbrug.nl');
