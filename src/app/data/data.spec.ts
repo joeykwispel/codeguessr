@@ -3,6 +3,7 @@ import { LAUNCH_DAY, puzzles } from './shared/puzzles';
 import { categories, type Term } from './shared/types';
 import termList from './shared/terms.json';
 import { puzzles as en } from './locales/en/puzzles';
+import { puzzles as nl } from './locales/nl/puzzles';
 import { snapshotRows } from './snapshot';
 
 const terms = termList as Term[];
@@ -39,7 +40,7 @@ describe('puzzle data integrity', () => {
     for (const p of puzzles) {
       // the last clue may be blunt, but earlier ones must not spell out the answer
       const name = new RegExp(`(^|[^a-z0-9])${escapeRegExp(p.answer)}([^a-z0-9]|$)`, 'i');
-      for (const c of en[p.id]!.clues.slice(0, 5)) expect(c, `#${p.id}`).not.toMatch(name);
+      for (const c of [...en[p.id]!.clues.slice(0, 5), ...nl[p.id]!.clues.slice(0, 5)]) expect(c, `#${p.id}`).not.toMatch(name);
     }
   });
 

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { I18n } from '../core/i18n';
 import { RouterLink } from '@angular/router';
+import { I18n } from '../core/i18n';
+import { Seo } from '../core/seo.service';
 
 @Component({
   selector: 'app-not-found-page',
@@ -11,7 +12,7 @@ import { RouterLink } from '@angular/router';
     <h1>{{ t.title }}</h1>
     <p class="muted">{{ t.text }}</p>
     <p>
-      <a routerLink="/">{{ t.link }}</a>
+      <a [routerLink]="i18n.href('/')">{{ t.link }}</a>
     </p>
   `,
   styles: `
@@ -24,4 +25,8 @@ import { RouterLink } from '@angular/router';
 })
 export class NotFoundPage {
   protected readonly i18n = inject(I18n);
+
+  constructor() {
+    inject(Seo).set('notFound');
+  }
 }

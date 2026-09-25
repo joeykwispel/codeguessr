@@ -15,7 +15,10 @@ export const ui = {
     toDark: 'Switch to dark theme',
     archive: 'Archive',
     stats: 'Statistics',
-    streak: 'Current streak: {n} days. Open statistics'
+    streak: 'Current streak: {n} days. Open statistics',
+    /** Shown in the other language, so a Dutch speaker can find it. */
+    otherLanguage: 'NL',
+    otherLanguageLabel: 'Nederlands: bekijk deze pagina in het Nederlands'
   },
   footer: {
     daily: 'A new puzzle every day at 00:00 UTC.',

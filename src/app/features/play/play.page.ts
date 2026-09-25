@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { isDay, utcDay } from '../../core/dates';
 import { I18n, fmt } from '../../core/i18n';
 import { PuzzleService } from '../../core/puzzle.service';
+import { Seo } from '../../core/seo.service';
 import { ClueList } from './clue-list';
 import { GameStore } from './game.store';
 import { GuessHistory } from './guess-history';
@@ -43,7 +44,7 @@ import { StatsService } from '../../core/stats.service';
     @if (!valid()) {
       <div class="notice card" role="alert">
         <p>{{ t.future }}</p>
-        <a routerLink="/">{{ t.backToToday }}</a>
+        <a [routerLink]="i18n.href('/')">{{ t.backToToday }}</a>
       </div>
     } @else if (puzzle.error()) {
       <div class="notice card" role="alert">
@@ -199,6 +200,7 @@ export class PlayPage {
   });
 
   constructor() {
+    inject(Seo).set('home');
     if (this.browser) this.offline.set(!navigator.onLine);
     effect(() => {
       const loaded = this.puzzle.hasValue() ? this.puzzle.value() : null;

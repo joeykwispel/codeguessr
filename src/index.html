@@ -14,6 +14,8 @@
       try {
         var t = localStorage.getItem('theme');
         if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        // a reader who chose Dutch before lands on /nl/ instead of the English home page
+        if (localStorage.getItem('lang') === 'nl' && location.pathname === '/' && !location.search) location.replace('/nl/' + location.hash);
       } catch (e) {}
     </script>
   </head>
