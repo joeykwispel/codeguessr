@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { render, screen, fireEvent } from '@testing-library/angular';
 import { GuessInput } from './guess-input';
 
@@ -59,5 +60,25 @@ describe('GuessInput (combobox)', () => {
     fireEvent.click(screen.getByRole('button', { name: /skip this turn/i }));
     expect(skipped).toHaveBeenCalled();
     expect(submitted).not.toHaveBeenCalled();
+  });
+});
+
+@Component({
+  imports: [GuessInput],
+  template: `<app-guess-input #input [turnsLeft]="6" [turns]="6" (submitted)="input.clear()" />`
+})
+class Host {}
+
+describe('GuessInput inside a page', () => {
+  it('clears the field right away when the page accepts a guess', async () => {
+    const { fixture } = await render(Host);
+    const field = screen.getByRole('combobox', { name: 'Your guess' }) as HTMLInputElement;
+    fireEvent.focus(field);
+    fireEvent.input(field, { target: { value: 'Java' } });
+    // submit straight away, without a render in between (a fast typist pressing Enter)
+    fireEvent.submit(field.form!);
+    expect(field.value).toBe('');
+    await fixture.whenStable();
+    expect(field.value).toBe('');
   });
 });

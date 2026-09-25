@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ANSWER, setup } from './helpers';
+import { ANSWER, headerLink, setup } from './helpers';
 
 test.beforeEach(async ({ page }) => {
   await setup(page);
@@ -75,7 +75,7 @@ test('the win animation plays without reduced motion', async ({ page }) => {
 
 test('focus moves to the new page after client-side navigation', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: 'Archive', exact: true }).click();
+  await (await headerLink(page, 'Archive')).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Archive' })).toBeVisible();
   await expect(page.locator('main')).toBeFocused();
 });

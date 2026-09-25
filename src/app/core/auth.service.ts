@@ -2,8 +2,9 @@ import { DestroyRef, Injectable, PLATFORM_ID, inject, signal } from '@angular/co
 import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { NavigationEnd, Router } from '@angular/router';
 import type { AuthChangeEvent, Session, SupabaseClient } from '@supabase/supabase-js';
-import { Observable, defer, shareReplay, switchMap } from 'rxjs';
+import { Observable, defer, first, shareReplay, switchMap } from 'rxjs';
 import { I18n, fmt } from './i18n';
 import { Supabase } from './supabase.client';
 
@@ -45,6 +46,7 @@ export class AuthService {
   private readonly supabase = inject(Supabase);
   private readonly announcer = inject(LiveAnnouncer);
   private readonly i18n = inject(I18n);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   private started = false;
@@ -103,12 +105,25 @@ export class AuthService {
     const user = toUser(session);
     this.user.set(user);
     this.status.set(user ? 'signed-in' : 'signed-out');
+    // Supabase strips ?code= after the sign-in redirect, but the router can put it back if its first navigation
+    // finishes later; drop it through the router so both agree.
+    if (user) this.dropCodeParam();
     const t = this.i18n.t().auth;
     if (user && before !== 'signed-in' && event === 'SIGNED_IN') {
       void this.announcer.announce(fmt(t.signedInAs, { name: user.name ?? user.email ?? '' }), 'polite');
     } else if (!user && before === 'signed-in') {
       void this.announcer.announce(event === 'SIGNED_OUT' ? t.signedOut : t.expired, 'polite');
     }
+  }
+
+  /** Waits for the router's first navigation, which would otherwise restore the URL it started with. */
+  private dropCodeParam(): void {
+    const drop = () => {
+      const hasCode = this.router.parseUrl(this.router.url).queryParamMap.has('code') || new URLSearchParams(location.search).has('code');
+      if (hasCode) void this.router.navigate([], { queryParams: { code: null }, queryParamsHandling: 'merge', replaceUrl: true });
+    };
+    if (this.router.navigated) drop();
+    else this.router.events.pipe(first((e) => e instanceof NavigationEnd)).subscribe(drop);
   }
 
   /** Google or Supabase can send the visitor back with ?error=...; show it and clean the URL. */

@@ -83,6 +83,10 @@ Puzzles still come from Supabase, and stats stay in localStorage.
 3. Wait for the DNS check in the Pages settings to pass, then tick **Enforce HTTPS**.
 4. Merge to `main`: `.github/workflows/deploy.yml` lints, checks, tests, builds and deploys. Pull requests run `.github/workflows/pr-check.yml` (lint, check, unit, e2e + axe, Lighthouse) without deploying.
 
+## Updating the design kit
+
+The files in `src/app/jo/` are copies of [`docs/design-kit`](https://github.com/joeykwispel/Portfolio/tree/main/docs/design-kit) in the portfolio repo. Don't edit them here: change the portfolio, then copy the files over unchanged. Only the `<jo-header>` inputs in `src/app/app.ts` are ours. Prettier and ESLint skip the folder so it stays byte-identical.
+
 ## Adding a puzzle
 
 See [Adding a puzzle](../README.md#adding-a-puzzle) in the README. In short: `data/shared/puzzles.ts` for the structure, `data/locales/en|nl/puzzles.ts` for the text, then run the seed workflow.
@@ -100,7 +104,8 @@ src/
     core/                 framework-free rules (game, guess, stats, merge, share, dates) + services
     data/                 all content; see the README
     features/             play, archive, stats, auth
-    shared/components/    header, footer, icon, countdown
+    jo/                   joeyoosenbrug.nl design kit (jo-kit.css, jo-header.*), copied unchanged from the portfolio
+    shared/components/    app bar, footer, icon, countdown
 supabase/                 migrations and RLS tests
 scripts/                  build and maintenance scripts
 e2e/                      Playwright tests

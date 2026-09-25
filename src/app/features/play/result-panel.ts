@@ -14,7 +14,7 @@ import { Icon } from '../../shared/components/icon';
   template: `
     @let t = i18n.t().play;
     @let s = state();
-    <section class="card result" [class.won]="s.status === 'won'" aria-labelledby="result-title" tabindex="-1">
+    <section class="glass result" [class.won]="s.status === 'won'" aria-labelledby="result-title" tabindex="-1">
       @if (s.status === 'won') {
         <div class="burst" aria-hidden="true">
           @for (i of pieces; track i) {
@@ -33,7 +33,7 @@ import { Icon } from '../../shared/components/icon';
         {{ t.answerWas }} <strong class="mono">{{ puzzle().answer }}</strong>
       </p>
       <div class="fact">
-        <h3>{{ t.funFact }}</h3>
+        <h3><span class="com" aria-hidden="true">// </span>{{ t.funFact }}</h3>
         <p>{{ puzzle().funFact }}</p>
       </div>
       <ng-content />
@@ -57,28 +57,22 @@ import { Icon } from '../../shared/components/icon';
       overflow: hidden;
     }
     .result {
-      animation: rise 0.4s ease-out;
-    }
-    @keyframes rise {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
+      animation: fade-up 0.7s var(--ease);
     }
     .result:focus {
       outline: none;
     }
     .won {
-      border-color: var(--success);
+      border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
     }
     h2 {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 1.5rem;
+      font-size: clamp(1.4rem, 3vw, 1.75rem);
     }
     .won h2 {
-      color: var(--success);
+      color: var(--ok);
     }
     .answer strong {
       font-size: 1.125rem;
@@ -86,13 +80,13 @@ import { Icon } from '../../shared/components/icon';
     .fact {
       padding: 0.75rem 0.875rem;
       border-left: 3px solid var(--accent);
-      background: var(--surface-2);
+      background: var(--surface);
       border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     }
     h3 {
-      font-size: 0.8125rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0;
       color: var(--muted);
       margin-bottom: 0.25rem;
     }
@@ -119,14 +113,14 @@ import { Icon } from '../../shared/components/icon';
       width: 10px;
       height: 10px;
       border-radius: 2px;
-      background: var(--success);
+      background: var(--accent);
       opacity: 0;
-      animation: pop 0.9s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+      animation: pop 0.9s var(--ease) forwards;
       animation-delay: calc(var(--i) * 20ms);
       --a: calc(var(--i) * 30deg);
     }
     .burst span:nth-child(3n) {
-      background: var(--accent);
+      background: var(--accent-2);
     }
     @keyframes pop {
       0% {

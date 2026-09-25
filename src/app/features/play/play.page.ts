@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, effect, inject, input, resource, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, effect, inject, input, resource, signal, untracked, viewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { RouterLink } from '@angular/router';
@@ -43,17 +43,17 @@ import { StatsService } from '../../core/stats.service';
     </header>
 
     @if (!valid()) {
-      <div class="notice card" role="alert">
+      <div class="glass notice" role="alert">
         <p>{{ isDay(day()) ? t.future : t.invalid }}</p>
         <a [routerLink]="i18n.href('/')">{{ t.backToToday }}</a>
       </div>
     } @else if (puzzle.error()) {
-      <div class="notice card" role="alert">
+      <div class="glass notice" role="alert">
         <p>{{ t.error }}</p>
         <button type="button" class="btn" (click)="puzzle.reload()">{{ t.retry }}</button>
       </div>
     } @else if (puzzle.hasValue() && !puzzle.value()) {
-      <div class="notice card" role="status">
+      <div class="glass notice" role="status">
         <p>{{ t.missing }}</p>
       </div>
     } @else if (p && s) {
@@ -70,7 +70,6 @@ import { StatsService } from '../../core/stats.service';
 
       @if (s.status === 'playing') {
         <app-guess-input
-          [(query)]="query"
           [error]="error()"
           [exclude]="guessed()"
           [turnsLeft]="store.turnsLeft()"
@@ -92,7 +91,7 @@ import { StatsService } from '../../core/stats.service';
       <app-guess-history [guesses]="s.guesses" [turns]="store.turns()" [finished]="s.status !== 'playing'" />
     } @else {
       <div class="skeleton" aria-busy="true">
-        <p class="visually-hidden" role="status">{{ t.loading }}</p>
+        <p class="sr-only" role="status">{{ t.loading }}</p>
         <!-- roughly the shape of the game (clues, guess field, history), to avoid layout shift -->
         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
           <div class="bar" aria-hidden="true"></div>
@@ -114,22 +113,15 @@ import { StatsService } from '../../core/stats.service';
       gap: 0.5rem;
     }
     h1 {
-      font-size: clamp(1.75rem, 5vw, 2.25rem);
-      letter-spacing: -0.02em;
+      font-size: clamp(2rem, 6vw, 3rem);
+      letter-spacing: -0.04em;
+      line-height: 1;
     }
     .tags {
       min-height: 1.625rem;
       display: flex;
       flex-wrap: wrap;
       gap: 0.375rem;
-    }
-    .tag {
-      padding: 0.125rem 0.625rem;
-      border-radius: 999px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      font-size: 0.8125rem;
-      font-weight: 600;
     }
     .notice {
       display: grid;
@@ -142,9 +134,11 @@ import { StatsService } from '../../core/stats.service';
       font-weight: 600;
     }
     .banner {
+      max-width: none;
       padding: 0.625rem 0.875rem;
       border-radius: var(--radius-sm);
-      background: var(--accent-soft);
+      border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+      background: var(--ok-soft);
       font-size: 0.9375rem;
     }
     .hard {
@@ -152,6 +146,8 @@ import { StatsService } from '../../core/stats.service';
       align-items: center;
       gap: 0.5rem;
       min-height: 44px;
+      font-family: var(--mono);
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       justify-self: start;
@@ -179,7 +175,8 @@ import { StatsService } from '../../core/stats.service';
     .bar {
       height: 3.375rem;
       border-radius: var(--radius-sm);
-      background: var(--surface-2);
+      border: 1px solid var(--border);
+      background: var(--surface);
       animation: pulse 1.4s ease-in-out infinite;
     }
     @keyframes pulse {
@@ -209,7 +206,6 @@ export class PlayPage {
   protected readonly valid = computed(() => isDay(this.day()) && this.day() <= this.today());
   protected readonly offline = signal(false);
 
-  protected readonly query = signal('');
   protected readonly error = signal<string | null>(null);
   /** True once the game ended during this visit, so the result gets focus (not when reopening a finished game). */
   protected readonly endedHere = signal(false);
@@ -224,12 +220,14 @@ export class PlayPage {
   constructor() {
     const seo = inject(Seo);
     effect(() => seo.set(this.date() ? 'archive' : 'home'));
-    // moving from one archive day to another reuses this page: start clean
+    // moving from one archive day to another reuses this page: start clean (only the day is tracked)
     effect(() => {
       this.day();
-      this.endedHere.set(false);
-      this.error.set(null);
-      this.query.set('');
+      untracked(() => {
+        this.endedHere.set(false);
+        this.error.set(null);
+        this.guessInput()?.clear();
+      });
     });
     if (this.browser) this.offline.set(!navigator.onLine);
     effect(() => {
@@ -246,7 +244,7 @@ export class PlayPage {
     this.error.set(outcome === 'empty' ? t.empty : outcome === 'unknown' ? fmt(t.unknown, { term }) : outcome === 'repeat' ? fmt(t.repeat, { term }) : null);
     const message = this.error();
     if (message) void this.announcer.announce(message, 'assertive');
-    if (outcome === 'ok') this.query.set('');
+    if (outcome === 'ok') this.guessInput()?.clear();
     this.guessInput()?.focus();
   }
 

@@ -25,3 +25,16 @@ export async function guess(page: Page, term: string) {
   await field.fill(term);
   await page.getByRole('button', { name: /^(guess|gok)$/i }).click();
 }
+
+/** A link in the design-kit header; below 1120px the links sit in the burger menu, so open it first. */
+export async function headerLink(page: Page, name: string) {
+  const burger = page.locator('.jo-nav__burger');
+  if ((await burger.isVisible()) && (await burger.getAttribute('aria-expanded')) !== 'true') await burger.click();
+  // the kit numbers its links (01., 02.); the number is only visible at some widths
+  return page.locator('.jo-nav__menu').getByRole('link', { name: new RegExp(`^(\\d+\\.)?${name}$`) });
+}
+
+/** The EN/NL pill in the design-kit header (same page in the other language). */
+export function languageLink(page: Page, code: 'EN' | 'NL') {
+  return page.locator('.jo-nav__lang').getByRole('link', { name: code, exact: true });
+}

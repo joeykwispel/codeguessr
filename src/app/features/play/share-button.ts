@@ -21,7 +21,7 @@ import { Icon } from '../../shared/components/icon';
         @for (g of state().guesses; track $index; let i = $index) {
           <li [class]="g.result === 'correct' ? 'hit' : 'miss'">
             <span aria-hidden="true">{{ g.result === 'correct' ? '✓' : '✗' }}</span>
-            <span class="visually-hidden">{{ fmt(t.grid, { n: i + 1, result: i18n.t().play[g.result] }) }}</span>
+            <span class="sr-only">{{ fmt(t.grid, { n: i + 1, result: i18n.t().play[g.result] }) }}</span>
           </li>
         }
       </ol>
@@ -62,11 +62,11 @@ import { Icon } from '../../shared/components/icon';
       font-size: 0.875rem;
     }
     .hit {
-      background: var(--success);
-      color: var(--bg);
+      background: var(--ok-fill);
+      color: var(--accent-ink);
     }
     .miss {
-      background: var(--surface-2);
+      background: var(--surface);
       border: 1px solid var(--border);
       color: var(--muted);
     }
@@ -75,7 +75,7 @@ import { Icon } from '../../shared/components/icon';
       font-size: 0.9375rem;
     }
     .ok {
-      color: var(--success);
+      color: var(--ok);
       font-weight: 600;
     }
     textarea {
@@ -85,7 +85,7 @@ import { Icon } from '../../shared/components/icon';
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       background: var(--surface-2);
-      font-family: var(--font-mono);
+      font-family: var(--mono);
     }
   `
 })

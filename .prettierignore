@@ -7,3 +7,5 @@ test-results
 playwright-report
 .lighthouseci
 out-tsc
+# vendored from the joeyoosenbrug.nl design kit; copied unchanged, never reformatted
+src/app/jo

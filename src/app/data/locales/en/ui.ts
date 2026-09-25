@@ -10,20 +10,18 @@ export const ui = {
   nav: {
     skip: 'Skip to the puzzle',
     home: "Codeguessr, today's puzzle",
-    main: 'Main',
-    toLight: 'Switch to light theme',
-    toDark: 'Switch to dark theme',
+    /** Header links (the header itself, with theme and language switch, comes from the design kit) */
+    play: 'Play',
     archive: 'Archive',
+    game: 'Your game',
     stats: 'Statistics',
-    streak: 'Current streak: {n} days. Open statistics',
-    /** Shown in the other language, so a Dutch speaker can find it. */
-    otherLanguage: 'NL',
-    otherLanguageLabel: 'Nederlands: bekijk deze pagina in het Nederlands'
+    streak: 'Current streak: {n} days. Open statistics'
   },
   footer: {
     daily: 'A new puzzle every day at 00:00 UTC.',
     madeBy: 'Made by',
-    source: 'Source'
+    source: 'Source',
+    newTab: '(opens in a new tab)'
   },
   play: {
     today: "Today's puzzle",

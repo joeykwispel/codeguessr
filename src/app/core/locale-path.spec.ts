@@ -1,4 +1,4 @@
-import { localeOf, localize, publicUrl, stripLocale } from './locale-path';
+import { localeOf, localize, publicPath, publicUrl, stripLocale } from './locale-path';
 
 describe('locale paths', () => {
   it('prefixes Dutch and leaves English at the root', () => {
@@ -24,6 +24,13 @@ describe('locale paths', () => {
     expect(localeOf('/nl?code=abc')).toBe('nl');
     expect(localeOf('/')).toBe('en');
     expect(localeOf('/nlx')).toBe('en');
+  });
+
+  it('builds public paths for the language links', () => {
+    expect(publicPath('/')).toBe('/');
+    expect(publicPath('/nl')).toBe('/nl/');
+    expect(publicPath('/archive/2026-09-21')).toBe('/archive/2026-09-21/');
+    expect(publicPath('/archive/?x=1')).toBe('/archive/');
   });
 
   it('builds public URLs with a trailing slash', () => {

@@ -24,7 +24,7 @@ function mondayOf(day: string): string {
     @let t = i18n.t().stats;
     @let s = stats.stats();
     <div class="head">
-      <h2 id="stats-title">{{ t.title }}</h2>
+      <h2 id="stats-title"><span class="br" aria-hidden="true">&lt;</span>{{ t.title }}<span class="br" aria-hidden="true">/&gt;</span></h2>
       <button type="button" class="icon-btn" [attr.aria-label]="t.close" (click)="ref.close()">
         <app-icon name="x" />
       </button>
@@ -82,7 +82,7 @@ function mondayOf(day: string): string {
       max-height: 90dvh;
       overflow-y: auto;
       padding: 1.25rem;
-      background: var(--surface);
+      background: var(--bg-2);
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -97,8 +97,13 @@ function mondayOf(day: string): string {
     h2 {
       font-size: 1.375rem;
     }
+    /* section titles written as a tag, like the portfolio */
+    .br {
+      color: var(--accent-text);
+    }
     h3 {
-      font-size: 0.9375rem;
+      font-family: var(--mono);
+      font-size: 0.85rem;
       margin: 1.25rem 0 0.5rem;
     }
     .totals {
@@ -113,9 +118,11 @@ function mondayOf(day: string): string {
       flex-direction: column-reverse;
       padding: 0.5rem 0.25rem;
       border-radius: var(--radius-sm);
-      background: var(--surface-2);
+      border: 1px solid var(--border);
+      background: var(--surface);
     }
     dt {
+      font-family: var(--mono);
       font-size: 0.75rem;
       color: var(--muted);
       line-height: 1.2;
@@ -124,7 +131,7 @@ function mondayOf(day: string): string {
       margin: 0;
       font-size: 1.5rem;
       font-weight: 800;
-      font-family: var(--font-mono);
+      font-family: var(--mono);
     }
     .dist {
       list-style: none;
@@ -140,24 +147,24 @@ function mondayOf(day: string): string {
     }
     .k {
       width: 1rem;
-      font-family: var(--font-mono);
+      font-family: var(--mono);
       font-weight: 700;
     }
     .bar {
       min-width: 1.75rem;
       padding: 0.125rem 0.5rem;
       border-radius: 4px;
-      background: var(--surface-2);
+      background: var(--surface);
       border: 1px solid var(--border);
       text-align: right;
       font-weight: 700;
-      font-family: var(--font-mono);
+      font-family: var(--mono);
       font-size: 0.875rem;
     }
     .bar.top {
-      background: var(--success);
-      border-color: var(--success);
-      color: var(--bg);
+      background: var(--ok-fill);
+      border-color: var(--ok-fill);
+      color: var(--accent-ink);
     }
     .cal {
       display: grid;
@@ -177,15 +184,15 @@ function mondayOf(day: string): string {
       line-height: 1;
     }
     .won {
-      background: var(--success);
-      color: var(--bg);
+      background: var(--ok-fill);
+      color: var(--accent-ink);
     }
     .lost {
-      background: var(--danger);
+      background: var(--bad);
       color: var(--bg);
     }
     .none {
-      background: var(--surface-2);
+      background: var(--surface);
       border: 1px solid var(--border);
     }
     .future {
