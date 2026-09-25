@@ -9,6 +9,6 @@
  */
 export const environment = {
   siteUrl: 'https://codeguessr.joeyoosenbrug.nl',
-  supabaseUrl: '',
-  supabaseAnonKey: ''
+  supabaseUrl: 'https://onnbzdrtdpyatfhzkghj.supabase.co',
+  supabaseAnonKey: 'sb_publishable_8nJ8d9Xct4EUJnU3LmEnAA_7iQfAtVb'
 };
