@@ -26,5 +26,6 @@ export default ts.config(
     extends: [js.configs.recommended, ...ts.configs.recommended, prettier],
     languageOptions: { globals: { ...globals.node } }
   },
-  { ignores: ['dist/', '.angular/', 'node_modules/', 'out-tsc/', 'test-results/', 'playwright-report/', '.lighthouseci/', 'coverage/'] }
+  // src/app/jo: the joeyoosenbrug.nl design kit, copied unchanged from the portfolio (its selector is jo-, not app-)
+  { ignores: ['src/app/jo/', 'dist/', '.angular/', 'node_modules/', 'out-tsc/', 'test-results/', 'playwright-report/', '.lighthouseci/', 'coverage/'] }
 );

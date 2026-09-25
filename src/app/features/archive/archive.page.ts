@@ -31,7 +31,7 @@ interface Item extends PuzzleSummary {
     </header>
 
     @if (list.error()) {
-      <div class="card notice" role="alert">
+      <div class="glass notice" role="alert">
         <p>{{ t.error }}</p>
         <button type="button" class="btn" (click)="list.reload()">{{ i18n.t().play.retry }}</button>
       </div>
@@ -40,7 +40,7 @@ interface Item extends PuzzleSummary {
         <div class="bar">
           <p class="progress">{{ fmt(t.progress, { played: playedCount(), total: items().length }) }}</p>
           <fieldset class="filter">
-            <legend class="visually-hidden">{{ t.filter }}</legend>
+            <legend class="sr-only">{{ t.filter }}</legend>
             <label [class.on]="!onlyUnplayed()"
               ><input type="radio" name="filter" [checked]="!onlyUnplayed()" (change)="onlyUnplayed.set(false)" />{{ t.all }}</label
             >
@@ -91,11 +91,11 @@ interface Item extends PuzzleSummary {
           </section>
         }
       } @else {
-        <p class="card notice">{{ t.empty }}</p>
+        <p class="glass notice">{{ t.empty }}</p>
       }
     } @else {
       <div class="skeleton" aria-busy="true">
-        <p class="visually-hidden" role="status">{{ t.loading }}</p>
+        <p class="sr-only" role="status">{{ t.loading }}</p>
         @for (i of [1, 2, 3, 4, 5]; track i) {
           <div class="sk" aria-hidden="true"></div>
         }
@@ -112,11 +112,13 @@ interface Item extends PuzzleSummary {
       gap: 0.5rem;
     }
     h1 {
-      font-size: clamp(1.75rem, 5vw, 2.25rem);
-      letter-spacing: -0.02em;
+      font-size: clamp(2rem, 6vw, 3rem);
+      letter-spacing: -0.04em;
+      line-height: 1;
     }
     h2 {
-      font-size: 1rem;
+      font-size: 0.9rem;
+      letter-spacing: 0;
       margin: 0.5rem 0;
       color: var(--muted);
       text-transform: capitalize;
@@ -129,6 +131,8 @@ interface Item extends PuzzleSummary {
       gap: 0.75rem;
     }
     .progress {
+      font-family: var(--mono);
+      font-size: 0.9rem;
       font-weight: 600;
     }
     .filter {
@@ -146,13 +150,14 @@ interface Item extends PuzzleSummary {
       min-height: 40px;
       padding: 0 0.875rem;
       border-radius: 999px;
-      font-size: 0.875rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
     }
     .filter label.on {
       background: var(--accent);
-      color: var(--accent-contrast);
+      color: var(--accent-ink);
     }
     .filter input {
       position: absolute;
@@ -162,7 +167,7 @@ interface Item extends PuzzleSummary {
       cursor: pointer;
     }
     .filter label:has(input:focus-visible) {
-      outline: 3px solid var(--focus);
+      outline: 3px solid var(--accent-text);
       outline-offset: 2px;
     }
     .list {
@@ -182,11 +187,17 @@ interface Item extends PuzzleSummary {
       border-left-width: 4px;
       border-radius: var(--radius-sm);
       background: var(--surface);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
       color: var(--text);
       text-decoration: none;
+      transition:
+        background 0.25s,
+        box-shadow 0.25s;
     }
     .item:hover {
       background: var(--surface-2);
+      box-shadow: 0 0 0 4px var(--glow);
     }
     .n {
       min-width: 2.5rem;
@@ -212,19 +223,19 @@ interface Item extends PuzzleSummary {
       white-space: nowrap;
     }
     .won {
-      border-left-color: var(--success);
+      border-left-color: var(--ok);
     }
     .won .status {
-      color: var(--success);
+      color: var(--ok);
     }
     .lost {
-      border-left-color: var(--danger);
+      border-left-color: var(--bad);
     }
     .lost .status {
-      color: var(--danger);
+      color: var(--bad);
     }
     .playing {
-      border-left-color: var(--accent);
+      border-left-color: var(--accent-2);
     }
     .notice {
       display: grid;

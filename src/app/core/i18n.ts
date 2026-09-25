@@ -37,6 +37,13 @@ export class I18n {
     effect(() => {
       this.doc.documentElement.lang = this.locale();
     });
+    // The design kit's EN/NL pill is a plain link; remember the choice when it's used.
+    if (this.browser) {
+      this.doc.addEventListener('click', (e) => {
+        const link = e.target instanceof Element ? e.target.closest<HTMLAnchorElement>('.jo-nav__lang a[hreflang]') : null;
+        if (link?.hreflang === 'en' || link?.hreflang === 'nl') this.remember(link.hreflang);
+      });
+    }
   }
 
   /** A router path in the active language. */

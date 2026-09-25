@@ -17,7 +17,7 @@ import { Icon } from '../../shared/components/icon';
       @for (g of guesses(); track $index; let i = $index) {
         <li [class]="g.result">
           <app-icon [name]="g.result === 'correct' ? 'check' : g.result === 'skipped' ? 'skip' : 'x'" />
-          <span class="visually-hidden">{{ fmt(t.turn, { n: i + 1 }) }}:</span>
+          <span class="sr-only">{{ fmt(t.turn, { n: i + 1 }) }}:</span>
           <span class="value">{{ g.value ?? '—' }}</span>
           <span class="result">{{ t[g.result] }}</span>
         </li>
@@ -29,7 +29,8 @@ import { Icon } from '../../shared/components/icon';
   `,
   styles: `
     .heading {
-      font-size: 1rem;
+      font-family: var(--mono);
+      font-size: 0.9rem;
       margin-bottom: 0.5rem;
     }
     ol {
@@ -47,35 +48,35 @@ import { Icon } from '../../shared/components/icon';
       padding: 0.5rem 0.75rem;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      font-family: var(--font-mono);
+      background: var(--surface);
+      font-family: var(--mono);
     }
     .value {
       flex: 1;
       overflow-wrap: anywhere;
     }
     .result {
-      font-family: var(--font-sans);
-      font-size: 0.8125rem;
+      font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
     .correct {
-      border-color: var(--success);
-      background: var(--success-soft);
-      color: var(--success);
+      border-color: var(--ok);
+      background: var(--ok-soft);
+      color: var(--ok);
     }
     .correct .value {
       color: var(--text);
       font-weight: 700;
     }
     .wrong {
-      border-color: var(--danger);
-      background: var(--danger-soft);
+      border-color: var(--bad);
+      background: var(--bad-soft);
     }
     .wrong app-icon,
     .wrong .result {
-      color: var(--danger);
+      color: var(--bad);
     }
     .skipped {
       color: var(--muted);

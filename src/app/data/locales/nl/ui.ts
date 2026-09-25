@@ -11,19 +11,17 @@ export const ui: UI = {
   nav: {
     skip: 'Naar de puzzel',
     home: 'Codeguessr, puzzel van vandaag',
-    main: 'Hoofdmenu',
-    toLight: 'Schakel naar licht thema',
-    toDark: 'Schakel naar donker thema',
+    play: 'Spelen',
     archive: 'Archief',
+    game: 'Jouw spel',
     stats: 'Statistieken',
-    streak: 'Huidige reeks: {n} dagen. Open statistieken',
-    otherLanguage: 'EN',
-    otherLanguageLabel: 'English: view this page in English'
+    streak: 'Huidige reeks: {n} dagen. Open statistieken'
   },
   footer: {
     daily: 'Elke dag om 00:00 UTC een nieuwe puzzel.',
     madeBy: 'Gemaakt door',
-    source: 'Broncode'
+    source: 'Broncode',
+    newTab: '(opent in een nieuw tabblad)'
   },
   play: {
     today: 'Puzzel van vandaag',

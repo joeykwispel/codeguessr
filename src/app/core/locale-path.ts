@@ -24,8 +24,13 @@ export function localize(path: string, locale: Locale): string {
   return neutral === '/' ? '/nl' : `/nl${neutral}`;
 }
 
-/** The public URL of a page, with the trailing slash GitHub Pages uses for directories. */
-export function publicUrl(siteUrl: string, path: string): string {
+/** A page's public path, with the trailing slash GitHub Pages uses for directories: "/nl/archive" -> "/nl/archive/". */
+export function publicPath(path: string): string {
   const clean = path.split(/[?#]/)[0] ?? '/';
-  return `${siteUrl}${clean === '/' ? '/' : `${clean.replace(/\/$/, '')}/`}`;
+  return clean === '/' || clean === '' ? '/' : `${clean.replace(/\/$/, '')}/`;
+}
+
+/** The public URL of a page. */
+export function publicUrl(siteUrl: string, path: string): string {
+  return `${siteUrl}${publicPath(path)}`;
 }

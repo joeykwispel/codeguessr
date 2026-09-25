@@ -40,7 +40,7 @@ import { Icon } from '../../shared/components/icon';
         }
       </button>
 
-      <div id="auth-panel" class="panel card" [hidden]="!open()">
+      <div id="auth-panel" class="panel" [hidden]="!open()">
         @if (user) {
           <p class="who">{{ fmt(t.signedInAs, { name: user.name ?? user.email ?? '' }) }}</p>
           @if (user.email && user.name) {
@@ -100,25 +100,31 @@ import { Icon } from '../../shared/components/icon';
       display: grid;
       place-items: center;
       background: var(--accent);
-      color: var(--accent-contrast);
+      color: var(--accent-ink);
       font-weight: 800;
     }
     .label {
-      font-size: 0.9375rem;
+      font-size: 0.8rem;
     }
     .panel {
       position: absolute;
       right: 0;
       top: calc(100% + 8px);
       z-index: 30;
-      width: min(88vw, 320px);
+      width: min(calc(100vw - 2rem), 320px);
       padding: 1rem;
       display: grid;
       gap: 0.625rem;
+      /* solid panel, like the kit's dropdowns */
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
     .title {
-      font-size: 1.0625rem;
+      font-family: var(--mono);
+      font-size: 1rem;
+      letter-spacing: -0.02em;
     }
     .who {
       font-weight: 700;
@@ -130,29 +136,16 @@ import { Icon } from '../../shared/components/icon';
       display: flex;
       align-items: center;
       gap: 0.375rem;
-      color: var(--success);
+      color: var(--ok);
     }
     .sync.bad {
-      color: var(--warning);
+      color: var(--flame);
     }
     .error {
-      color: var(--danger);
+      color: var(--bad);
     }
     .google {
       width: 100%;
-    }
-    /* after the base rules, so these win on small screens */
-    @media (max-width: 520px) {
-      .label {
-        display: none;
-      }
-      .panel {
-        position: fixed;
-        left: var(--gutter);
-        right: var(--gutter);
-        top: 64px;
-        width: auto;
-      }
     }
   `
 })

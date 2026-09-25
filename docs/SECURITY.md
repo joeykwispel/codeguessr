@@ -49,7 +49,7 @@ These run in CI on every pull request (`npm run test:unit`).
 
 - **Content Security Policy** as a `<meta>` tag on every page: `default-src 'self'`, scripts only from the site plus a sha256 hash per inline script (computed by `scripts/postbuild.mjs`, which also fails the build on inline event handlers), `connect-src` limited to the site and `*.supabase.co`, `object-src 'none'`, `base-uri 'self'`, `form-action 'none'`. `style-src` allows `'unsafe-inline'` because Angular injects component styles at runtime. A meta-tag CSP can't set `frame-ancestors`; GitHub Pages can't send headers.
 - **OAuth** uses the authorization code flow with PKCE. The redirect only goes to URLs on the Supabase allow list.
-- No cookies of our own and no analytics. The Supabase session lives in localStorage, where it is exposed to any script on the page; the strict CSP is what keeps foreign scripts out.
+- No analytics, and one cookie: `jo-theme` (dark/light), set by the design kit on `.joeyoosenbrug.nl` so the theme is shared across the subdomains. It holds nothing else. The Supabase session lives in localStorage, where it is exposed to any script on the page; the strict CSP is what keeps foreign scripts out.
 
 ## Things to keep in mind
 

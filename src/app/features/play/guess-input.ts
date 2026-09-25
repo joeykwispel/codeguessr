@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, input, model, output, signal, untracked, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, input, output, signal, untracked, viewChild } from '@angular/core';
 import { I18n, fmt } from '../../core/i18n';
 import type { Suggestion } from '../../core/guess';
 import { Icon } from '../../shared/components/icon';
@@ -37,7 +37,6 @@ import { terms } from './game.store';
             [attr.aria-invalid]="error() ? 'true' : null"
             [placeholder]="t.placeholder"
             [disabled]="disabled()"
-            [value]="query()"
             (input)="onInput($event)"
             (keydown)="onKeydown($event)"
             (focus)="focused.set(true)"
@@ -65,7 +64,7 @@ import { terms } from './game.store';
       </div>
       <div class="meta">
         <p id="guess-turns" class="muted">{{ turnsText() }}</p>
-        <button type="button" class="btn skip" [disabled]="disabled()" [attr.aria-label]="t.skipLabel" (click)="skipped.emit()">
+        <button type="button" class="btn skip-turn" [disabled]="disabled()" [attr.aria-label]="t.skipLabel" (click)="skipped.emit()">
           <app-icon name="skip" />
           {{ t.skip }}
         </button>
@@ -73,7 +72,7 @@ import { terms } from './game.store';
       @if (error()) {
         <p id="guess-error" class="error">{{ error() }}</p>
       }
-      <p class="visually-hidden" role="status">{{ countText() }}</p>
+      <p class="sr-only" role="status">{{ countText() }}</p>
     </form>
   `,
   styles: `
@@ -90,6 +89,8 @@ import { terms } from './game.store';
     }
     .label {
       display: block;
+      font-family: var(--mono);
+      font-size: 0.9rem;
       font-weight: 600;
       margin-bottom: 0.375rem;
     }
@@ -106,24 +107,29 @@ import { terms } from './game.store';
       width: 100%;
       min-height: 48px;
       padding: 0.625rem 0.875rem;
-      border: 2px solid var(--border);
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       background: var(--surface);
-      font-family: var(--font-mono);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      font-family: var(--mono);
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
       font-size: 1rem;
     }
     input::placeholder {
       color: var(--muted);
       opacity: 1;
-      font-family: var(--font-sans);
+      font-family: var(--font);
     }
     input:focus-visible {
       outline: none;
-      border-color: var(--focus);
-      box-shadow: 0 0 0 3px var(--accent-soft);
+      border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
+      box-shadow: 0 0 0 4px var(--glow);
     }
     input[aria-invalid='true'] {
-      border-color: var(--danger);
+      border-color: var(--bad);
     }
     input:disabled {
       opacity: 0.6;
@@ -139,9 +145,10 @@ import { terms } from './game.store';
       list-style: none;
       max-height: min(50vh, 320px);
       overflow-y: auto;
-      background: var(--surface);
+      /* solid panel, like the kit's dropdowns */
+      background: var(--bg-2);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
     li {
@@ -153,11 +160,11 @@ import { terms } from './game.store';
       padding: 0.625rem 0.75rem;
       border-radius: 6px;
       cursor: pointer;
-      font-family: var(--font-mono);
+      font-family: var(--mono);
     }
     li.active {
-      background: var(--accent-soft);
-      outline: 2px solid var(--accent);
+      background: var(--ok-soft);
+      outline: 2px solid var(--accent-text);
       outline-offset: -2px;
     }
     .alias {
@@ -174,14 +181,15 @@ import { terms } from './game.store';
     .meta p {
       font-size: 0.875rem;
     }
-    .skip {
+    /* not .skip: the kit uses that for the skip link */
+    .skip-turn {
       min-height: 40px;
       padding: 0.375rem 0.75rem;
       font-size: 0.875rem;
     }
     .error {
       margin-top: 0.5rem;
-      color: var(--danger);
+      color: var(--bad);
       font-weight: 500;
     }
   `
@@ -190,7 +198,8 @@ export class GuessInput {
   protected readonly i18n = inject(I18n);
   private readonly field = viewChild<ElementRef<HTMLInputElement>>('field');
 
-  readonly query = model('');
+  /** What is typed. Owned here; the page calls clear() after an accepted guess. */
+  readonly query = signal('');
   readonly disabled = input(false);
   readonly error = input<string | null>(null);
   readonly exclude = input<readonly (string | null)[]>([]);
@@ -224,6 +233,24 @@ export class GuessInput {
     effect(() => {
       if (this.error()) untracked(() => this.shake.set(true));
     });
+    // Keep the field in sync with the query in code, not with a [value] binding: when you type fast, change detection
+    // may never see the typed text, so clearing the query after a guess would look like "no change" and leave it there.
+    effect(() => {
+      const query = this.query();
+      const el = this.field()?.nativeElement;
+      if (el && el.value !== query) el.value = query;
+    });
+  }
+
+  /**
+   * Empties the field right away. A two-way [(query)] binding couldn't do this reliably: typing and pressing Enter
+   * before a render means the page's value goes "Java" -> "" between two renders, which looks like no change at all.
+   */
+  clear(): void {
+    this.query.set('');
+    this.active.set(-1);
+    const el = this.field()?.nativeElement;
+    if (el) el.value = '';
   }
 
   focus(): void {

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { guess, setup } from './helpers';
+import { guess, languageLink, setup } from './helpers';
 
 test('prerendered pages carry their language, canonical and hreflang tags', async ({ request }) => {
   for (const [path, lang] of [
@@ -22,8 +22,8 @@ test('switch to Dutch and back, keeping the game and remembering the choice', as
   await page.goto('/');
   await guess(page, 'Java');
 
-  await page.getByRole('link', { name: /bekijk deze pagina in het Nederlands/ }).click();
-  await expect(page).toHaveURL(/\/nl$/);
+  await languageLink(page, 'NL').click();
+  await expect(page).toHaveURL(/\/nl\/?$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'nl');
   await expect(page.getByRole('heading', { level: 1, name: 'Puzzel #5' })).toBeVisible();
   await expect(page).toHaveTitle('Codeguessr · De dagelijkse puzzel voor developers');
@@ -36,7 +36,7 @@ test('switch to Dutch and back, keeping the game and remembering the choice', as
   await expect(page).toHaveURL(/\/nl\/?$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'nl');
 
-  await page.getByRole('link', { name: /view this page in English/ }).click();
+  await languageLink(page, 'EN').click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.getByRole('heading', { level: 1, name: 'Puzzle #5' })).toBeVisible();
   await page.goto('/');

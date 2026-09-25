@@ -1,36 +1,52 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { I18n } from '../../core/i18n';
 
+/** Footer in the portfolio's style: mono, muted, a // comment, external links marked with ↗. */
 @Component({
   selector: 'app-site-footer',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let t = i18n.t().footer;
     <footer>
-      <p>{{ t.daily }}</p>
-      <p>
-        {{ t.madeBy }} <a href="https://joeyoosenbrug.nl">Joey Oosenbrug</a> ·
-        <a href="https://github.com/joeykwispel/codeguessr">{{ t.source }}</a>
-      </p>
+      <div class="row mono">
+        <p><span class="com">// </span>© {{ year }} Codeguessr · {{ t.daily }}</p>
+        <p>
+          {{ t.madeBy }}
+          <a href="https://joeyoosenbrug.nl/" target="_blank" rel="noopener noreferrer"
+            >Joey Oosenbrug ↗<span class="sr-only"> {{ t.newTab }}</span></a
+          >
+          ·
+          <a href="https://github.com/joeykwispel/codeguessr" target="_blank" rel="noopener noreferrer"
+            >{{ t.source }} ↗<span class="sr-only"> {{ t.newTab }}</span></a
+          >
+        </p>
+      </div>
     </footer>
   `,
   styles: `
     footer {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: 1.5rem var(--gutter) 2rem;
+      border-top: 1px solid var(--border);
+      padding-block: 1.25rem 1.5rem;
       color: var(--muted);
-      font-size: 0.875rem;
-      text-align: center;
-      display: grid;
-      gap: 0.25rem;
+      font-size: 0.8rem;
+      background: color-mix(in srgb, var(--bg) 70%, transparent);
+    }
+    .row {
+      width: min(var(--column), 100% - 2rem);
+      margin-inline: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem 1rem;
+      flex-wrap: wrap;
     }
     a {
       display: inline-block;
-      padding: 0.5rem 0;
+      padding-block: 0.25rem;
     }
   `
 })
 export class SiteFooter {
   protected readonly i18n = inject(I18n);
+  protected readonly year = new Date().getUTCFullYear();
 }

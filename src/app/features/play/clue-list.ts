@@ -7,21 +7,21 @@ import { I18n, fmt } from '../../core/i18n';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let t = i18n.t().play;
-    <h2 class="visually-hidden">{{ t.clues }}</h2>
+    <h2 class="sr-only">{{ t.clues }}</h2>
     <ol>
       @for (clue of clues(); track $index; let i = $index) {
         @if (i < revealed()) {
           <li class="clue open">
             <span class="n" aria-hidden="true">{{ i + 1 }}</span>
             <p>
-              <span class="visually-hidden">{{ fmt(t.clue, { n: i + 1 }) }}: </span>{{ clue }}
+              <span class="sr-only">{{ fmt(t.clue, { n: i + 1 }) }}: </span>{{ clue }}
             </p>
           </li>
         } @else {
           <li class="clue locked">
             <span class="n" aria-hidden="true">{{ i + 1 }}</span>
             <p>
-              <span class="visually-hidden">{{ fmt(t.clue, { n: i + 1 }) }}: </span>{{ t.locked }}
+              <span class="sr-only">{{ fmt(t.clue, { n: i + 1 }) }}: </span>{{ t.locked }}
             </p>
           </li>
         }
@@ -44,9 +44,11 @@ import { I18n, fmt } from '../../core/i18n';
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       background: var(--surface);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
     }
     .open {
-      animation: reveal 0.35s ease-out;
+      animation: reveal 0.7s var(--ease);
     }
     .locked {
       background: transparent;
@@ -60,11 +62,11 @@ import { I18n, fmt } from '../../core/i18n';
       width: 1.75rem;
       height: 1.75rem;
       border-radius: 6px;
-      background: var(--accent-soft);
-      color: var(--text);
-      font-family: var(--font-mono);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      color: var(--accent-text);
+      font-family: var(--mono);
       font-weight: 700;
-      font-size: 0.875rem;
+      font-size: 0.8rem;
     }
     .locked .n {
       background: var(--surface-2);
@@ -76,7 +78,8 @@ import { I18n, fmt } from '../../core/i18n';
     @keyframes reveal {
       from {
         opacity: 0;
-        transform: translateY(-4px);
+        transform: translateY(8px);
+        filter: blur(6px);
       }
     }
   `

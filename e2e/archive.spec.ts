@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { guess, setup } from './helpers';
+import { guess, headerLink, setup } from './helpers';
 
 const stats = { streak: 1, maxStreak: 1, lastPlayedDate: '2026-09-24', gamesPlayed: 3, gamesWon: 2, guessDistribution: [0, 0, 2, 0, 0, 0] };
 
@@ -33,7 +33,9 @@ test('lists every puzzle so far with what you did on it', async ({ page }) => {
   await expect(page.getByRole('link', { name: /Puzzle #2, .*: Lost/ })).toBeVisible();
   await expect(page.getByRole('link', { name: /Puzzle #1, .*: In progress/ })).toBeVisible();
   // the header link marks the current page
-  await expect(page.getByRole('link', { name: 'Archive', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(await headerLink(page, 'Archive')).toHaveAttribute('aria-current', 'page');
+  await expect(await headerLink(page, 'Play')).not.toHaveAttribute('aria-current');
+  await page.keyboard.press('Escape');
 
   await page.getByText('Not played yet').click();
   await expect(page.getByRole('link', { name: /Puzzle #/ })).toHaveCount(2);
