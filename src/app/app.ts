@@ -1,14 +1,15 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { SiteHeader } from './shared/components/site-header';
+import { I18n } from './core/i18n';
 import { SiteFooter } from './shared/components/site-footer';
+import { SiteHeader } from './shared/components/site-header';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, SiteHeader, SiteFooter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <a class="skip" href="#main">Skip to the puzzle</a>
+    <a class="skip" href="#main">{{ i18n.t().nav.skip }}</a>
     <app-site-header />
     <main id="main" tabindex="-1">
       <router-outlet />
@@ -47,4 +48,6 @@ import { SiteFooter } from './shared/components/site-footer';
     }
   `
 })
-export class App {}
+export class App {
+  protected readonly i18n = inject(I18n);
+}

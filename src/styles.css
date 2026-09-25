@@ -1,6 +1,8 @@
 /* Self-hosted variable fonts (no Google Fonts CDN call); only the unicode ranges a page uses get downloaded. */
 @import '@fontsource-variable/inter/index.css';
 @import '@fontsource-variable/jetbrains-mono/index.css';
+/* Angular CDK overlay (dialogs) */
+@import '@angular/cdk/overlay-prebuilt.css';
 
 /*
  * Design tokens. Light is the base; dark applies when the system prefers it (unless the visitor picked light),
@@ -139,7 +141,8 @@ kbd,
   font-family: var(--font-mono);
 }
 
-.visually-hidden {
+.visually-hidden,
+.cdk-visually-hidden {
   position: absolute !important;
   width: 1px;
   height: 1px;

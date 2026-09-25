@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { I18n } from '../core/i18n';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -6,9 +7,12 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <h1>404: term not found</h1>
-    <p class="muted">This page doesn't exist.</p>
-    <p><a routerLink="/">Play today's puzzle</a></p>
+    @let t = i18n.t().notFound;
+    <h1>{{ t.title }}</h1>
+    <p class="muted">{{ t.text }}</p>
+    <p>
+      <a routerLink="/">{{ t.link }}</a>
+    </p>
   `,
   styles: `
     :host {
@@ -18,4 +22,6 @@ import { RouterLink } from '@angular/router';
     }
   `
 })
-export class NotFoundPage {}
+export class NotFoundPage {
+  protected readonly i18n = inject(I18n);
+}

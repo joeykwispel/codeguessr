@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { I18n } from '../../core/i18n';
 import { ThemeService } from '../../core/theme.service';
 import { Icon } from './icon';
 
@@ -8,18 +9,14 @@ import { Icon } from './icon';
   imports: [RouterLink, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @let t = i18n.t().nav;
     <header>
-      <a class="brand" routerLink="/" aria-label="Codeguessr, today's puzzle">
+      <a class="brand" routerLink="/" [attr.aria-label]="t.home">
         <img src="favicon.svg" alt="" width="28" height="28" />
         <span>Codeguessr</span>
       </a>
-      <nav aria-label="Main">
-        <button
-          type="button"
-          class="icon-btn"
-          (click)="theme.toggle()"
-          [attr.aria-label]="theme.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
-        >
+      <nav [attr.aria-label]="t.main">
+        <button type="button" class="icon-btn" (click)="theme.toggle()" [attr.aria-label]="theme.theme() === 'dark' ? t.toLight : t.toDark">
           <app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" />
         </button>
       </nav>
@@ -60,4 +57,5 @@ import { Icon } from './icon';
 })
 export class SiteHeader {
   protected readonly theme = inject(ThemeService);
+  protected readonly i18n = inject(I18n);
 }

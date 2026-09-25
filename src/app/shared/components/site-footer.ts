@@ -1,14 +1,16 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { I18n } from '../../core/i18n';
 
 @Component({
   selector: 'app-site-footer',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @let t = i18n.t().footer;
     <footer>
-      <p>A new puzzle every day at 00:00 UTC.</p>
+      <p>{{ t.daily }}</p>
       <p>
-        Made by <a href="https://joeyoosenbrug.nl">Joey Oosenbrug</a> ·
-        <a href="https://github.com/joeykwispel/codeguessr">Source</a>
+        {{ t.madeBy }} <a href="https://joeyoosenbrug.nl">Joey Oosenbrug</a> ·
+        <a href="https://github.com/joeykwispel/codeguessr">{{ t.source }}</a>
       </p>
     </footer>
   `,
@@ -29,4 +31,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     }
   `
 })
-export class SiteFooter {}
+export class SiteFooter {
+  protected readonly i18n = inject(I18n);
+}
