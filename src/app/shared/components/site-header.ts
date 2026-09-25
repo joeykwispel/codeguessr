@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18n, fmt } from '../../core/i18n';
 import { localize } from '../../core/locale-path';
 import { StatsService } from '../../core/stats.service';
@@ -10,7 +10,7 @@ import { Icon } from './icon';
 
 @Component({
   selector: 'app-site-header',
-  imports: [RouterLink, Icon, AuthButton],
+  imports: [RouterLink, RouterLinkActive, Icon, AuthButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let t = i18n.t().nav;
@@ -20,6 +20,9 @@ import { Icon } from './icon';
         <span>Codeguessr</span>
       </a>
       <nav [attr.aria-label]="t.main">
+        <a class="icon-btn" [routerLink]="i18n.href('/archive')" routerLinkActive="active" ariaCurrentWhenActive="page" [attr.aria-label]="t.archive">
+          <app-icon name="calendar" />
+        </a>
         <button
           type="button"
           class="icon-btn streak"
@@ -82,6 +85,9 @@ import { Icon } from './icon';
       align-items: center;
       gap: 0.125rem;
     }
+    .active {
+      background: var(--accent-soft);
+    }
     .lang span {
       font-size: 0.8125rem;
     }
@@ -94,9 +100,13 @@ import { Icon } from './icon';
     .streak span {
       color: var(--text);
     }
-    @media (max-width: 380px) {
-      .brand span {
+    @media (max-width: 520px) {
+      .brand span,
+      .lang app-icon {
         display: none;
+      }
+      nav {
+        gap: 0;
       }
     }
   `

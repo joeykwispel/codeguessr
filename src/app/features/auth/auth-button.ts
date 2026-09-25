@@ -35,6 +35,7 @@ import { Icon } from '../../shared/components/icon';
             <span class="initial" aria-hidden="true">{{ initial() }}</span>
           }
         } @else {
+          <app-icon name="user" />
           <span class="label">{{ t.signIn }}</span>
         }
       </button>
@@ -104,6 +105,18 @@ import { Icon } from '../../shared/components/icon';
     }
     .label {
       font-size: 0.9375rem;
+    }
+    @media (max-width: 520px) {
+      .label {
+        display: none;
+      }
+      .panel {
+        position: fixed;
+        left: var(--gutter);
+        right: var(--gutter);
+        top: 64px;
+        width: auto;
+      }
     }
     .panel {
       position: absolute;

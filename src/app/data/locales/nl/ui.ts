@@ -69,8 +69,27 @@ export const ui: UI = {
     missing: 'Voor deze dag is er nog geen puzzel. Kom snel terug.',
     future: 'Deze puzzel is nog niet uit. Niet spieken.',
     offline: 'Je bent offline; dit is de meegeleverde kopie van de puzzel.',
+    invalid: 'Dat is geen geldige puzzeldatum.',
     backToToday: 'Terug naar de puzzel van vandaag',
     archiveNote: 'Archiefspel: telt niet mee voor je reeks of statistieken.'
+  },
+  archive: {
+    title: 'Archief',
+    intro: 'Alle puzzels tot nu toe. Archiefspellen veranderen nooit je reeks of statistieken.',
+    loading: 'Archief laden…',
+    error: 'Het archief kon niet worden geladen.',
+    empty: 'Nog geen puzzels.',
+    progress: '{played} van {total} gespeeld',
+    filter: 'Toon',
+    all: 'Alle',
+    unplayed: 'Nog niet gespeeld',
+    today: 'Vandaag',
+    won: 'Gewonnen in {n}',
+    lost: 'Verloren',
+    playing: 'Bezig',
+    none: 'Niet gespeeld',
+    item: 'Puzzel #{n}, {date}, {category}: {status}',
+    back: 'Terug naar het archief'
   },
   share: {
     button: 'Deel resultaat',

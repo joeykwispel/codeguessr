@@ -43,7 +43,7 @@ import { StatsService } from '../../core/stats.service';
 
     @if (!valid()) {
       <div class="notice card" role="alert">
-        <p>{{ t.future }}</p>
+        <p>{{ isDay(day()) ? t.future : t.invalid }}</p>
         <a [routerLink]="i18n.href('/')">{{ t.backToToday }}</a>
       </div>
     } @else if (puzzle.error()) {
@@ -57,7 +57,10 @@ import { StatsService } from '../../core/stats.service';
       </div>
     } @else if (p && s) {
       @if (s.archive) {
-        <p class="banner" role="note">{{ t.archiveNote }}</p>
+        <p class="banner" role="note">
+          {{ t.archiveNote }}
+          <a [routerLink]="i18n.href('/archive')">{{ i18n.t().archive.back }}</a>
+        </p>
       }
       @if (puzzle.value()?.source === 'snapshot' && offline()) {
         <p class="banner muted">{{ t.offline }}</p>
@@ -127,6 +130,10 @@ import { StatsService } from '../../core/stats.service';
       justify-items: start;
       padding: 1.25rem;
     }
+    .banner a {
+      margin-left: 0.25rem;
+      font-weight: 600;
+    }
     .banner {
       padding: 0.625rem 0.875rem;
       border-radius: var(--radius-sm);
@@ -173,6 +180,7 @@ export class PlayPage {
   protected readonly store = inject(GameStore);
   protected readonly stats = inject(StatsService);
   protected readonly fmt = fmt;
+  protected readonly isDay = isDay;
   private readonly puzzles = inject(PuzzleService);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly guessInput = viewChild(GuessInput);
@@ -200,7 +208,15 @@ export class PlayPage {
   });
 
   constructor() {
-    inject(Seo).set('home');
+    const seo = inject(Seo);
+    effect(() => seo.set(this.date() ? 'archive' : 'home'));
+    // moving from one archive day to another reuses this page: start clean
+    effect(() => {
+      this.day();
+      this.endedHere.set(false);
+      this.error.set(null);
+      this.query.set('');
+    });
     if (this.browser) this.offline.set(!navigator.onLine);
     effect(() => {
       const loaded = this.puzzle.hasValue() ? this.puzzle.value() : null;

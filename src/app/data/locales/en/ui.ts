@@ -69,8 +69,27 @@ export const ui = {
     missing: 'There’s no puzzle for this day yet. Check back soon.',
     future: 'This puzzle isn’t out yet. No peeking.',
     offline: 'You’re offline; this is the bundled copy of the puzzle.',
+    invalid: 'That isn’t a valid puzzle date.',
     backToToday: 'Back to today’s puzzle',
     archiveNote: 'Archive game: it doesn’t count towards your streak or stats.'
+  },
+  archive: {
+    title: 'Archive',
+    intro: 'Every puzzle so far. Archive games never change your streak or stats.',
+    loading: 'Loading the archive…',
+    error: 'The archive couldn’t be loaded.',
+    empty: 'No puzzles yet.',
+    progress: '{played} of {total} played',
+    filter: 'Show',
+    all: 'All',
+    unplayed: 'Not played yet',
+    today: 'Today',
+    won: 'Won in {n}',
+    lost: 'Lost',
+    playing: 'In progress',
+    none: 'Not played',
+    item: 'Puzzle #{n}, {date}, {category}: {status}',
+    back: 'Back to the archive'
   },
   share: {
     button: 'Share result',
