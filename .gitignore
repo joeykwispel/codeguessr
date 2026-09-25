@@ -1,0 +1,27 @@
+# dependencies and build output
+node_modules
+dist
+out-tsc
+.angular
+
+# local AI tooling (not part of the site)
+.agents
+.claude
+.playwright-mcp
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# env files (the Supabase anon key is public and lives in src/environments; the service role key never does)
+.env
+.env.*
+!.env.example
+
+# test output
+test-results
+playwright-report
+.lighthouseci
+coverage

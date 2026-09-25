@@ -1,0 +1,15 @@
+{
+  "name": "Codeguessr",
+  "short_name": "Codeguessr",
+  "description": "A daily puzzle for developers: guess the tech term from a sequence of clues.",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "background_color": "#0b0f17",
+  "theme_color": "#4f3fd9",
+  "icons": [
+    { "src": "icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
