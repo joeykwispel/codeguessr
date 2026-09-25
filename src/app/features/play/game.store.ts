@@ -5,6 +5,7 @@ import { TermIndex, isCorrect } from '../../core/guess';
 import { I18n, fmt } from '../../core/i18n';
 import { localize } from '../../core/puzzle.service';
 import { SettingsService } from '../../core/settings.service';
+import { StatsService } from '../../core/stats.service';
 import { storage } from '../../core/storage';
 import type { PuzzleRow, Term } from '../../data/shared/types';
 import termList from '../../data/shared/terms.json';
@@ -30,6 +31,7 @@ export class GameStore {
   private readonly announcer = inject(LiveAnnouncer);
   private readonly i18n = inject(I18n);
   private readonly settings = inject(SettingsService);
+  private readonly stats = inject(StatsService);
   private readonly finishedHandlers: ((state: GameState) => void)[] = [];
 
   readonly row = signal<PuzzleRow | null>(null);
@@ -97,7 +99,10 @@ export class GameStore {
     this.state.set(next);
     storage.set(gameKey(next.date), next);
     this.announce(next);
-    if (next.status !== 'playing') for (const h of this.finishedHandlers) h(next);
+    if (next.status !== 'playing') {
+      this.stats.record(next);
+      for (const h of this.finishedHandlers) h(next);
+    }
   }
 
   private announce(s: GameState): void {

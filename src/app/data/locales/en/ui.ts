@@ -12,7 +12,10 @@ export const ui = {
     home: "Codeguessr, today's puzzle",
     main: 'Main',
     toLight: 'Switch to light theme',
-    toDark: 'Switch to dark theme'
+    toDark: 'Switch to dark theme',
+    archive: 'Archive',
+    stats: 'Statistics',
+    streak: 'Current streak: {n} days. Open statistics'
   },
   footer: {
     daily: 'A new puzzle every day at 00:00 UTC.',
@@ -65,6 +68,31 @@ export const ui = {
     offline: 'You’re offline; this is the bundled copy of the puzzle.',
     backToToday: 'Back to today’s puzzle',
     archiveNote: 'Archive game: it doesn’t count towards your streak or stats.'
+  },
+  share: {
+    button: 'Share result',
+    copied: 'Result copied to the clipboard.',
+    failed: 'Couldn’t copy automatically. Select the text below and copy it.',
+    preview: 'Your result',
+    grid: 'Turn {n}: {result}'
+  },
+  stats: {
+    title: 'Statistics',
+    played: 'Played',
+    winRate: 'Win %',
+    streak: 'Current streak',
+    maxStreak: 'Max streak',
+    distribution: 'Guess distribution',
+    distributionRow: 'Solved in {n}: {count}',
+    history: 'Last 12 weeks',
+    historySummary: 'Last 12 weeks: {won} won, {lost} lost',
+    won: 'won',
+    lost: 'lost',
+    none: 'not played',
+    day: '{date}: {result}',
+    empty: 'Finish a daily puzzle to start your stats.',
+    local: 'Stats are saved in this browser only.',
+    close: 'Close'
   },
   notFound: {
     title: '404: term not found',

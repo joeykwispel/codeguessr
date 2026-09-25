@@ -10,11 +10,13 @@ import { GameStore } from './game.store';
 import { GuessHistory } from './guess-history';
 import { GuessInput } from './guess-input';
 import { ResultPanel } from './result-panel';
+import { ShareButton } from './share-button';
+import { StatsService } from '../../core/stats.service';
 
 /** Today's puzzle at /, and any past puzzle at /archive/<date> (which never touches the streak). */
 @Component({
   selector: 'app-play-page',
-  imports: [RouterLink, ClueList, GuessInput, GuessHistory, ResultPanel],
+  imports: [RouterLink, ClueList, GuessInput, GuessHistory, ResultPanel, ShareButton],
   providers: [GameStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -77,7 +79,9 @@ import { ResultPanel } from './result-panel';
         </label>
         <p id="hard-hint" class="hint muted">{{ t.hardHint }}</p>
       } @else {
-        <app-result-panel [state]="s" [puzzle]="p" [focusOnShow]="endedHere()" (reload)="reload()" />
+        <app-result-panel [state]="s" [puzzle]="p" [focusOnShow]="endedHere()" (reload)="reload()">
+          <app-share-button [state]="s" [streak]="stats.streak()" />
+        </app-result-panel>
       }
 
       <app-guess-history [guesses]="s.guesses" [turns]="store.turns()" [finished]="s.status !== 'playing'" />
@@ -166,6 +170,7 @@ import { ResultPanel } from './result-panel';
 export class PlayPage {
   protected readonly i18n = inject(I18n);
   protected readonly store = inject(GameStore);
+  protected readonly stats = inject(StatsService);
   protected readonly fmt = fmt;
   private readonly puzzles = inject(PuzzleService);
   private readonly browser = isPlatformBrowser(inject(PLATFORM_ID));
