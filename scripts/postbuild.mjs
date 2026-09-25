@@ -5,7 +5,7 @@
 // 3. sitemap.xml with hreflang alternates for every prerendered page.
 // 4. Refreshes the service worker's hash table for the files changed above, so the PWA doesn't reject them.
 import { createHash } from 'node:crypto';
-import { copyFileSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -66,6 +66,10 @@ for (const file of htmlFiles(root)) {
   writeFileSync(file, html);
   changed.add(file);
 }
+
+// Angular writes the bundled packages' licenses next to the site instead of into it; ship them with the site
+const licenses = fileURLToPath(new URL('../dist/codeguessr/3rdpartylicenses.txt', import.meta.url));
+if (existsSync(licenses)) copyFileSync(licenses, join(root, '3rdpartylicenses.txt'));
 
 // 404 fallback: the client-rendered shell handles every route that has no prerendered page
 copyFileSync(join(root, 'index.csr.html'), join(root, '404.html'));

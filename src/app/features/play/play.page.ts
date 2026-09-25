@@ -32,12 +32,13 @@ import { StatsService } from '../../core/stats.service';
           {{ t.today }}
         }
       </h1>
-      @if (p) {
-        <p class="tags">
+      <!-- the row is always there, so the page doesn't jump when the puzzle arrives -->
+      <p class="tags">
+        @if (p) {
           <span class="tag">{{ i18n.content().categories[p.category] }}</span>
           <span class="tag mono">{{ p.date }}</span>
-        </p>
-      }
+        }
+      </p>
       <p class="muted">{{ t.intro }}</p>
     </header>
 
@@ -92,8 +93,13 @@ import { StatsService } from '../../core/stats.service';
     } @else {
       <div class="skeleton" aria-busy="true">
         <p class="visually-hidden" role="status">{{ t.loading }}</p>
+        <!-- roughly the shape of the game (clues, guess field, history), to avoid layout shift -->
         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
           <div class="bar" aria-hidden="true"></div>
+        }
+        <div class="bar field" aria-hidden="true"></div>
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <div class="bar slot" aria-hidden="true"></div>
         }
       </div>
     }
@@ -112,6 +118,7 @@ import { StatsService } from '../../core/stats.service';
       letter-spacing: -0.02em;
     }
     .tags {
+      min-height: 1.625rem;
       display: flex;
       flex-wrap: wrap;
       gap: 0.375rem;
@@ -162,8 +169,15 @@ import { StatsService } from '../../core/stats.service';
       display: grid;
       gap: 0.5rem;
     }
+    .bar.field {
+      height: 11rem;
+      margin-block: 0.75rem;
+    }
+    .bar.slot {
+      height: 2.75rem;
+    }
     .bar {
-      height: 3.25rem;
+      height: 3.375rem;
       border-radius: var(--radius-sm);
       background: var(--surface-2);
       animation: pulse 1.4s ease-in-out infinite;

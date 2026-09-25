@@ -17,6 +17,11 @@ describe('puzzle data integrity', () => {
     });
   });
 
+  it('has the full 60-puzzle launch set with no repeated answers', () => {
+    expect(puzzles.length).toBeGreaterThanOrEqual(60);
+    expect(new Set(puzzles.map((p) => p.answer)).size).toBe(puzzles.length);
+  });
+
   it('every answer is a known term', () => {
     const names = new Set(terms.map((t) => t.name));
     for (const p of puzzles) expect(names.has(p.answer), p.answer).toBe(true);

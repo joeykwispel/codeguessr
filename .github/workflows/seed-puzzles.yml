@@ -1,0 +1,40 @@
+# Seeds (upserts) every puzzle in src/app/data into the Supabase `puzzles` table. Manual only.
+# One-time setup: repo Settings -> Secrets and variables -> Actions:
+#   - variable SUPABASE_URL             https://<project-ref>.supabase.co
+#   - secret   SUPABASE_SERVICE_ROLE_KEY the service role (secret) key; it bypasses RLS, so it only lives here
+name: Seed puzzles
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only validate and list the puzzles, write nothing'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seed-puzzles
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    environment: supabase
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Seed
+        run: node scripts/seed-puzzles.ts ${{ inputs.dry_run && '--dry-run' || '' }}
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
