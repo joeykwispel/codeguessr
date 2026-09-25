@@ -26,3 +26,14 @@ test('theme toggle switches and persists', async ({ page }) => {
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 });
+
+test('the privacy policy is linked from the footer, in both languages', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('contentinfo').getByRole('link', { name: 'Privacy', exact: true }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Privacy' })).toBeVisible();
+  await expect(page).toHaveTitle('Privacy · Codeguessr');
+  await expect(page.getByText('joey.oosenbrug@gmail.com')).toBeVisible();
+  await page.goto('/nl/privacy/');
+  await expect(page.getByRole('heading', { name: 'Als je inlogt met Google' })).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'nl');
+});

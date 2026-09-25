@@ -5,7 +5,9 @@ export const ui = {
     description: 'Guess the framework, language, tool or protocol from up to six clues. A new developer puzzle every day, free, no account needed.',
     archiveTitle: 'Archive · Codeguessr',
     archiveDescription: 'Play every past Codeguessr puzzle. Archive games never touch your streak.',
-    notFoundTitle: 'Page not found · Codeguessr'
+    notFoundTitle: 'Page not found · Codeguessr',
+    privacyTitle: 'Privacy · Codeguessr',
+    privacyDescription: 'What Codeguessr stores (almost nothing), where, and how to have it deleted.'
   },
   nav: {
     skip: 'Skip to the puzzle',
@@ -21,7 +23,8 @@ export const ui = {
     daily: 'A new puzzle every day at 00:00 UTC.',
     madeBy: 'Made by',
     source: 'Source',
-    newTab: '(opens in a new tab)'
+    newTab: '(opens in a new tab)',
+    privacy: 'Privacy'
   },
   play: {
     today: "Today's puzzle",
@@ -131,6 +134,7 @@ export const ui = {
     syncing: 'Syncing your stats…',
     synced: 'Stats synced across your devices.',
     syncError: 'Couldn’t sync right now. It will try again next time.',
+    privacyLink: 'Privacy policy',
     close: 'Close'
   },
   notFound: {

@@ -6,7 +6,9 @@ export const ui: UI = {
     description: 'Raad het framework, de taal, tool of het protocol aan de hand van maximaal zes hints. Elke dag een nieuwe puzzel, gratis en zonder account.',
     archiveTitle: 'Archief · Codeguessr',
     archiveDescription: 'Speel elke eerdere Codeguessr-puzzel. Archiefspellen tellen nooit mee voor je reeks.',
-    notFoundTitle: 'Pagina niet gevonden · Codeguessr'
+    notFoundTitle: 'Pagina niet gevonden · Codeguessr',
+    privacyTitle: 'Privacy · Codeguessr',
+    privacyDescription: 'Wat Codeguessr opslaat (bijna niets), waar, en hoe je het laat verwijderen.'
   },
   nav: {
     skip: 'Naar de puzzel',
@@ -21,7 +23,8 @@ export const ui: UI = {
     daily: 'Elke dag om 00:00 UTC een nieuwe puzzel.',
     madeBy: 'Gemaakt door',
     source: 'Broncode',
-    newTab: '(opent in een nieuw tabblad)'
+    newTab: '(opent in een nieuw tabblad)',
+    privacy: 'Privacy'
   },
   play: {
     today: 'Puzzel van vandaag',
@@ -131,6 +134,7 @@ export const ui: UI = {
     syncing: 'Statistieken synchroniseren…',
     synced: 'Statistieken gesynchroniseerd op al je apparaten.',
     syncError: 'Synchroniseren lukt nu niet. De volgende keer wordt het opnieuw geprobeerd.',
+    privacyLink: 'Privacybeleid',
     close: 'Sluiten'
   },
   notFound: {

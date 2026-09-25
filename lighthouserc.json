@@ -2,7 +2,13 @@
   "ci": {
     "collect": {
       "staticDistDir": "./dist/codeguessr/browser",
-      "url": ["http://localhost/index.html", "http://localhost/nl/index.html", "http://localhost/archive/index.html", "http://localhost/nl/archive/index.html"],
+      "url": [
+        "http://localhost/index.html",
+        "http://localhost/nl/index.html",
+        "http://localhost/archive/index.html",
+        "http://localhost/nl/archive/index.html",
+        "http://localhost/privacy/index.html"
+      ],
       "numberOfRuns": 2,
       "settings": {
         "preset": "desktop"
