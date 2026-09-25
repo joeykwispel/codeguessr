@@ -1,0 +1,9 @@
+dist
+.angular
+node_modules
+package-lock.json
+public
+test-results
+playwright-report
+.lighthouseci
+out-tsc
