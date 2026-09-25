@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { I18n } from '../../core/i18n';
 
 /** Footer in the portfolio's style: mono, muted, a // comment, external links marked with ↗. */
 @Component({
   selector: 'app-site-footer',
+  imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let t = i18n.t().footer;
@@ -19,6 +21,8 @@ import { I18n } from '../../core/i18n';
           <a href="https://github.com/joeykwispel/codeguessr" target="_blank" rel="noopener noreferrer"
             >{{ t.source }} ↗<span class="sr-only"> {{ t.newTab }}</span></a
           >
+          ·
+          <a [routerLink]="i18n.href('/privacy')">{{ t.privacy }}</a>
         </p>
       </div>
     </footer>

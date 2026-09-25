@@ -27,7 +27,7 @@ describe('translations', () => {
     expect(files('nl')).toEqual(files('en'));
   });
 
-  for (const part of ['ui', 'categories'] as const) {
+  for (const part of ['ui', 'categories', 'privacy'] as const) {
     it(`nl has the same ${part} keys as en`, () => {
       expect(keys(nl[part])).toEqual(keys(en[part]));
     });

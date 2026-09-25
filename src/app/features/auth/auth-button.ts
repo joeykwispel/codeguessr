@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { CloudSync } from '../../core/cloud-sync.service';
 import { I18n, fmt } from '../../core/i18n';
@@ -11,7 +12,7 @@ import { Icon } from '../../shared/components/icon';
  */
 @Component({
   selector: 'app-auth-button',
-  imports: [Icon],
+  imports: [Icon, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { '(document:keydown.escape)': 'close(true)', '(document:pointerdown)': 'outside($event)' },
   template: `
@@ -81,7 +82,10 @@ import { Icon } from '../../shared/components/icon';
             </svg>
             {{ auth.status() === 'loading' ? t.loading : t.google }}
           </button>
-          <p class="muted small">{{ t.privacy }}</p>
+          <p class="muted small">
+            {{ t.privacy }}
+            <a [routerLink]="i18n.href('/privacy')" (click)="close()">{{ t.privacyLink }}</a>
+          </p>
         }
       </div>
     }

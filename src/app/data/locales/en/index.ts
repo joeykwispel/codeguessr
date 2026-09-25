@@ -1,5 +1,6 @@
 import { categories } from './categories';
+import { privacy } from './privacy';
 import { ui } from './ui';
 
 /** Interface copy for English. Puzzle text (puzzles.ts) is loaded separately, with the snapshot. */
-export default { ui, categories };
+export default { ui, categories, privacy };
