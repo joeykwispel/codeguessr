@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, afterNextRender, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, ElementRef, afterNextRender, inject, viewChild } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter, skip } from 'rxjs';
 import { AuthService } from './core/auth.service';
 import { CloudSync } from './core/cloud-sync.service';
 import { I18n } from './core/i18n';
@@ -13,7 +14,7 @@ import { SiteHeader } from './shared/components/site-header';
   template: `
     <a class="skip" href="#main">{{ i18n.t().nav.skip }}</a>
     <app-site-header />
-    <main id="main" tabindex="-1">
+    <main #main id="main" tabindex="-1">
       <router-outlet />
     </main>
     <app-site-footer />
@@ -52,6 +53,7 @@ import { SiteHeader } from './shared/components/site-header';
 })
 export class App {
   protected readonly i18n = inject(I18n);
+  private readonly main = viewChild.required<ElementRef<HTMLElement>>('main');
 
   constructor() {
     // Optional sign-in and cloud sync start after the first render, so they never hold up the game.
@@ -61,5 +63,13 @@ export class App {
       auth.init();
       sync.init();
     });
+    // After client-side navigation, move focus to the new content (like a page load would), so keyboard and
+    // screen reader users don't stay behind on a link that may no longer exist.
+    inject(Router)
+      .events.pipe(
+        filter((e) => e instanceof NavigationEnd),
+        skip(1)
+      )
+      .subscribe(() => setTimeout(() => this.main().nativeElement.focus({ preventScroll: true })));
   }
 }

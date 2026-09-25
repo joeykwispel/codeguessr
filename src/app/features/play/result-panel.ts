@@ -56,6 +56,15 @@ import { Icon } from '../../shared/components/icon';
       padding: 1.25rem;
       overflow: hidden;
     }
+    .result {
+      animation: rise 0.4s ease-out;
+    }
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+    }
     .result:focus {
       outline: none;
     }

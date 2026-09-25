@@ -25,6 +25,9 @@ export class ThemeService {
     const next: Theme = this.theme() === 'dark' ? 'light' : 'dark';
     this.theme.set(next);
     this.doc.documentElement.dataset['theme'] = next;
+    // the browser UI colour follows the chosen theme instead of the system one
+    for (const meta of Array.from(this.doc.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')))
+      meta.content = next === 'dark' ? '#0b0f17' : '#f6f7f9';
     storage.setString('theme', next);
   }
 }

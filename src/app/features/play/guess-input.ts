@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, model, output, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, input, model, output, signal, untracked, viewChild } from '@angular/core';
 import { I18n, fmt } from '../../core/i18n';
 import type { Suggestion } from '../../core/guess';
 import { Icon } from '../../shared/components/icon';
@@ -18,7 +18,7 @@ import { terms } from './game.store';
     <form class="guess" (submit)="submitForm($event)" novalidate>
       <label for="guess-field" class="label">{{ t.input }}</label>
       <div class="row">
-        <div class="combo">
+        <div class="combo" [class.shake]="shake()" (animationend)="shake.set(false)">
           <input
             #field
             id="guess-field"
@@ -77,6 +77,17 @@ import { terms } from './game.store';
     </form>
   `,
   styles: `
+    .shake {
+      animation: shake 0.3s ease-in-out;
+    }
+    @keyframes shake {
+      25% {
+        transform: translateX(-6px);
+      }
+      75% {
+        transform: translateX(6px);
+      }
+    }
     .label {
       display: block;
       font-weight: 600;
@@ -189,6 +200,8 @@ export class GuessInput {
   readonly skipped = output<void>();
 
   protected readonly focused = signal(false);
+  /** A short shake when a guess is rejected (skipped entirely with reduced motion). */
+  protected readonly shake = signal(false);
   protected readonly dismissed = signal(false);
   protected readonly active = signal(-1);
 
@@ -206,6 +219,12 @@ export class GuessInput {
     const n = this.suggestions().length;
     return n ? fmt(this.i18n.t().play.suggestionCount, { n }) : this.i18n.t().play.noSuggestions;
   });
+
+  constructor() {
+    effect(() => {
+      if (this.error()) untracked(() => this.shake.set(true));
+    });
+  }
 
   focus(): void {
     this.field()?.nativeElement.focus();
