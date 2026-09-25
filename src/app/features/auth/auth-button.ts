@@ -106,18 +106,6 @@ import { Icon } from '../../shared/components/icon';
     .label {
       font-size: 0.9375rem;
     }
-    @media (max-width: 520px) {
-      .label {
-        display: none;
-      }
-      .panel {
-        position: fixed;
-        left: var(--gutter);
-        right: var(--gutter);
-        top: 64px;
-        width: auto;
-      }
-    }
     .panel {
       position: absolute;
       right: 0;
@@ -152,6 +140,19 @@ import { Icon } from '../../shared/components/icon';
     }
     .google {
       width: 100%;
+    }
+    /* after the base rules, so these win on small screens */
+    @media (max-width: 520px) {
+      .label {
+        display: none;
+      }
+      .panel {
+        position: fixed;
+        left: var(--gutter);
+        right: var(--gutter);
+        top: 64px;
+        width: auto;
+      }
     }
   `
 })
