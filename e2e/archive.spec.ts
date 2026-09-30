@@ -57,7 +57,7 @@ test('an archive game can be finished without touching the streak', async ({ pag
 
   await page.getByRole('link', { name: 'Back to the archive' }).click();
   await expect(page.getByRole('link', { name: /Puzzle #1, .*: Won in 2/ })).toBeVisible();
-  await page.getByRole('button', { name: 'Statistics', exact: true }).click();
+  await page.getByRole('button', { name: /Open statistics/ }).click();
   await expect(page.getByRole('dialog').getByText('Played', { exact: true }).locator('..')).toContainText('3');
 });
 

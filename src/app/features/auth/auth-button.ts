@@ -110,6 +110,19 @@ import { Icon } from '../../shared/components/icon';
     .label {
       font-size: 0.8rem;
     }
+    /* in the header on a phone: icon only, and the panel spans the screen below the header */
+    @media (max-width: 520px) {
+      .label {
+        display: none;
+      }
+      .panel {
+        position: fixed;
+        top: calc(var(--nav-h) + 4px);
+        left: 0.75rem;
+        right: 0.75rem;
+        width: auto;
+      }
+    }
     .panel {
       position: absolute;
       right: 0;
