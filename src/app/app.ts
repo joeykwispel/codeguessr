@@ -51,7 +51,8 @@ export class App {
     const path = this.i18n.path();
     return [
       { label: t.play, routerLink: this.i18n.href('/'), current: path === '/' },
-      { label: t.archive, routerLink: this.i18n.href('/archive'), current: path === '/archive' || path.startsWith('/archive/') }
+      { label: t.archive, routerLink: this.i18n.href('/archive'), current: path === '/archive' || path.startsWith('/archive/') },
+      { label: t.leaderboard, routerLink: this.i18n.href('/leaderboard'), current: path === '/leaderboard' }
     ];
   });
   /** The same page in the other language, not the home page. */

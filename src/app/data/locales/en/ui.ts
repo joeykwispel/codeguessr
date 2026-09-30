@@ -7,7 +7,9 @@ export const ui = {
     archiveDescription: 'Play every past Codeguessr puzzle. Archive games never touch your streak.',
     notFoundTitle: 'Page not found · Codeguessr',
     privacyTitle: 'Privacy · Codeguessr',
-    privacyDescription: 'What Codeguessr stores (almost nothing), where, and how to have it deleted.'
+    privacyDescription: 'What Codeguessr stores (almost nothing), where, and how to have it deleted.',
+    leaderboardTitle: 'Leaderboard · Codeguessr',
+    leaderboardDescription: 'The Codeguessr players with the most puzzles played, the longest streak and the most wins.'
   },
   nav: {
     skip: 'Skip to the puzzle',
@@ -15,6 +17,7 @@ export const ui = {
     /** Header links (the header itself, with theme and language switch, comes from the design kit) */
     play: 'Play',
     archive: 'Archive',
+    leaderboard: 'Leaderboard',
     game: 'Your game',
     stats: 'Statistics',
     streak: 'Current streak: {n} days. Open statistics'
@@ -91,6 +94,38 @@ export const ui = {
     none: 'Not played',
     item: 'Puzzle #{n}, {date}, {category}: {status}',
     back: 'Back to the archive'
+  },
+  leaderboard: {
+    title: 'Leaderboard',
+    intro: 'The top players who chose to join. Only daily puzzles count; archive games don’t.',
+    metric: 'Rank by',
+    played: 'Most played',
+    streak: 'Longest streak',
+    wins: 'Most wins',
+    playedValue: '{n} played',
+    streakValue: '{n} days',
+    winsValue: '{n} wins',
+    row: 'Rank {rank}: {name}, {value}',
+    you: 'you',
+    loading: 'Loading the leaderboard…',
+    error: 'The leaderboard couldn’t be loaded.',
+    unavailable: 'The leaderboard isn’t available right now.',
+    empty: 'Nobody has joined yet. Be the first!',
+    joinTitle: 'Join the leaderboard',
+    signedOut: 'Joining is optional. Sign in with Google to put your stats on the leaderboard under a nickname.',
+    signIn: 'Sign in with Google',
+    why: 'Pick a nickname. Only your nickname and your numbers are shown; your Google name, email and picture never are.',
+    nickname: 'Nickname',
+    rules: '2 to 20 letters (a-z), digits, spaces, dots, dashes or underscores.',
+    join: 'Join',
+    joined: 'You’re on the leaderboard as {name}.',
+    save: 'Save nickname',
+    leave: 'Leave the leaderboard',
+    saved: 'Saved. You’re on the leaderboard as {name}.',
+    left: 'You left the leaderboard.',
+    taken: 'That nickname is taken. Try another one.',
+    invalid: 'Use 2 to 20 letters (a-z), digits, spaces, dots, dashes or underscores.',
+    failed: 'That didn’t work. Try again later.'
   },
   share: {
     button: 'Share result',

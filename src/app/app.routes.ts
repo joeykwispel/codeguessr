@@ -6,6 +6,7 @@ const play = () => import('./features/play/play.page').then((m) => m.PlayPage);
 const pages: Routes = [
   { path: '', loadComponent: play },
   { path: 'archive', loadComponent: () => import('./features/archive/archive.page').then((m) => m.ArchivePage) },
+  { path: 'leaderboard', loadComponent: () => import('./features/leaderboard/leaderboard.page').then((m) => m.LeaderboardPage) },
   { path: 'privacy', loadComponent: () => import('./features/privacy/privacy.page').then((m) => m.PrivacyPage) },
   // a past puzzle; the :date input is read by PlayPage (withComponentInputBinding)
   { path: 'archive/:date', loadComponent: play },

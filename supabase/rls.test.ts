@@ -137,3 +137,63 @@ describe('puzzles RLS', () => {
     ).rejects.toThrow(/permission denied/);
   });
 });
+
+describe('leaderboard', () => {
+  /** Daily puzzles released so far; the leaderboard caps every value at this. */
+  const released = (Date.parse(new Date().toISOString().slice(0, 10)) - Date.parse('2026-09-21')) / 86_400_000 + 1;
+
+  it('a user can join with a nickname and see only their own profile', async () => {
+    await db.exec(`insert into public.leaderboard_profiles (user_id, nickname) values ('${BOB}', 'bobby')`);
+    await as('authenticated', ALICE, `insert into public.leaderboard_profiles (user_id, nickname) values ($1, 'Ada_1')`, [ALICE]);
+    const { rows } = await as('authenticated', ALICE, `select nickname from public.leaderboard_profiles`);
+    expect(rows).toEqual([{ nickname: 'Ada_1' }]);
+  });
+
+  it('a user cannot join, rename or remove someone else', async () => {
+    await expect(as('authenticated', ALICE, `insert into public.leaderboard_profiles (user_id, nickname) values ($1, 'fake')`, [BOB])).rejects.toThrow(
+      /row-level security/
+    );
+    const renamed = await as('authenticated', ALICE, `update public.leaderboard_profiles set nickname = 'hacked' where user_id = $1`, [BOB]);
+    const removed = await as('authenticated', ALICE, `delete from public.leaderboard_profiles where user_id = $1`, [BOB]);
+    expect([renamed.affectedRows, removed.affectedRows]).toEqual([0, 0]);
+  });
+
+  it('anonymous visitors cannot read the profiles table directly', async () => {
+    await expect(as('anon', null, `select * from public.leaderboard_profiles`)).rejects.toThrow(/permission denied/);
+  });
+
+  it('nicknames are unique regardless of case and must be valid', async () => {
+    await as('authenticated', ALICE, `delete from public.leaderboard_profiles where user_id = $1`, [ALICE]);
+    await expect(as('authenticated', ALICE, `insert into public.leaderboard_profiles (user_id, nickname) values ($1, 'BOBBY')`, [ALICE])).rejects.toThrow(
+      /duplicate key/
+    );
+    for (const bad of ['a', ' spaced', 'way-too-long-nickname-here', 'semi;colon', '<b>']) {
+      await expect(as('authenticated', ALICE, `insert into public.leaderboard_profiles (user_id, nickname) values ($1, $2)`, [ALICE, bad])).rejects.toThrow(
+        /check constraint/
+      );
+    }
+    await as('authenticated', ALICE, `insert into public.leaderboard_profiles (user_id, nickname) values ($1, 'Ada_1')`, [ALICE]);
+  });
+
+  it('anyone can read the ranking, which only contains nicknames and numbers', async () => {
+    const { rows, fields } = await as('anon', null, `select * from public.leaderboard('played')`);
+    expect(fields.map((f) => f.name)).toEqual(['rank', 'nickname', 'value']);
+    expect(rows.map((r) => r['nickname'])).toEqual(['bobby', 'Ada_1']);
+    expect(rows[0]).toMatchObject({ rank: 1, value: Math.min(20, released) });
+  });
+
+  it('ranks each metric separately and ignores unknown metrics', async () => {
+    const wins = await as('authenticated', ALICE, `select nickname, value from public.leaderboard('wins')`);
+    expect(wins.rows).toEqual([{ nickname: 'bobby', value: Math.min(15, released) }]);
+    const streak = await as('anon', null, `select nickname, value from public.leaderboard('streak')`);
+    expect(streak.rows).toEqual([{ nickname: 'bobby', value: Math.min(7, released) }]);
+    const unknown = await as('anon', null, `select * from public.leaderboard('email')`);
+    expect(unknown.rows).toEqual([]);
+  });
+
+  it('players who leave, or never joined, are not listed', async () => {
+    await as('authenticated', ALICE, `delete from public.leaderboard_profiles where user_id = $1`, [ALICE]);
+    const { rows } = await as('anon', null, `select nickname from public.leaderboard('played')`);
+    expect(rows).toEqual([{ nickname: 'bobby' }]);
+  });
+});

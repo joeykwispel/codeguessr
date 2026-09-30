@@ -1,7 +1,7 @@
 /** The privacy policy. Keep it in step with nl/privacy.ts and with what the code actually stores. */
 export const privacy = {
   title: 'Privacy',
-  updated: 'Last updated: 25 September 2026',
+  updated: 'Last updated: 30 September 2026',
   intro:
     'Codeguessr is a free puzzle game made by Joey Oosenbrug (the Netherlands). You can play without an account, and there are no ads, no analytics and no tracking. This page explains exactly what is stored and why.',
   sections: [
@@ -18,6 +18,7 @@ export const privacy = {
       paragraphs: [
         'Signing in is optional and only used to sync your stats across devices. When you sign in, Google shares your account ID, email address, name and profile picture with the app. These are stored in the login system (Supabase Auth) and only used to show who is signed in.',
         'Your stats are stored in one database row: current and longest streak, the date you last played, games played and won, how many turns your wins took, and when the row was last updated. Nothing else is stored about you, and no one else can read it: the database only lets you read and change your own row.',
+        'Joining the leaderboard is a separate, optional choice. If you join, the nickname you pick is stored with your account, and your nickname together with your games played, longest streak and games won is shown publicly on the leaderboard. Your Google name, email address and picture are never shown. You can change your nickname or leave the leaderboard at any time, which removes the nickname straight away.',
         'The legal basis is your consent (GDPR article 6(1)(a)): you choose to sign in, and you can withdraw that at any time by asking for your account to be deleted.'
       ]
     },
@@ -31,7 +32,7 @@ export const privacy = {
     {
       heading: 'How long it is kept',
       paragraphs: [
-        'Data in your browser stays until you clear it. Your account and stats row stay until you ask for them to be deleted; deleting the account deletes the stats row with it.'
+        'Data in your browser stays until you clear it. Your account, stats row and leaderboard nickname stay until you ask for them to be deleted; deleting the account deletes the stats row and nickname with it.'
       ]
     },
     {

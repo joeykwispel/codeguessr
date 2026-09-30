@@ -15,12 +15,13 @@ Every day at 00:00 UTC there is one new puzzle, the same for everyone. The answe
 - Solve it within six turns (four in hard mode) to keep your streak alive. Win or lose, you get the answer and a fun fact.
 - Share your result as an emoji grid (🟩 for the solve, ⬛ for a miss) with the puzzle number and your score, so it still reads without the colours.
 
-Everything works without an account. Signing in with Google only adds one thing: your streak and stats sync across devices.
+Everything works without an account. Signing in with Google adds two optional things: your streak and stats sync across devices, and you can join the leaderboard under a nickname.
 
 ## What's on the site
 
 - **Today's puzzle** (`/`): clues, guesses with autocomplete, guess history, result with fun fact and a share button
 - **Archive** (`/archive/`): every puzzle since launch, marked won, lost, in progress or not played. Archive games never touch your streak
+- **Leaderboard** (`/leaderboard/`): the top players by games played, longest streak and wins. Opt-in only: signed-in players join with a nickname, and nothing from their Google account is shown
 - **Statistics**: games played, win %, current and max streak, guess distribution and a 12-week calendar
 - **Hard mode**: only the four hardest clues, four turns
 - English at `/`, Dutch at `/nl/`, dark theme by default with an equal light theme, shared with the other joeyoosenbrug.nl apps
