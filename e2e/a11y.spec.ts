@@ -57,7 +57,7 @@ for (const theme of ['dark', 'light'] as const) {
 
     test('stats dialog and sign-in panel', async ({ page }) => {
       await page.goto('/');
-      await page.getByRole('button', { name: 'Statistics', exact: true }).click();
+      await page.getByRole('button', { name: /Open statistics/ }).click();
       await expect(page.getByRole('dialog')).toBeVisible();
       expect(await scan(page)).toEqual([]);
       await page.keyboard.press('Escape');

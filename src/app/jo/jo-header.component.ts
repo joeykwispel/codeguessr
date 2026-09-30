@@ -9,7 +9,9 @@
  *     [links]="[{ label: 'Play', routerLink: '/en/play' }, { label: 'Leaderboard', routerLink: '/en/leaderboard' }]"
  *     [languages]="[{ code: 'en', href: '/en/', current: true }, { code: 'nl', href: '/nl/' }]"
  *     [labels]="labels.en"
- *   />
+ *   >
+ *     <app-controls />   <!-- optional: projected at the start of the tools, before the language switch -->
+ *   </jo-header>
  */
 
 import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, input, output, viewChild } from '@angular/core';
@@ -98,6 +100,7 @@ export const JO_HEADER_LABELS: Record<'en' | 'nl', JoHeaderLabels> = {
         </nav>
 
         <div class="jo-nav__tools">
+          <ng-content />
           <button type="button" class="jo-nav__search" [attr.aria-label]="labels().search" aria-keyshortcuts="Control+K Meta+K" [hidden]="!showSearch()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
               <circle cx="11" cy="11" r="7" />

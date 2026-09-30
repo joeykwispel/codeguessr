@@ -80,7 +80,7 @@ test('sign in with Google, merge local stats into the cloud row, sign out', asyn
     last_played_date: '2026-09-24'
   });
 
-  await page.getByRole('button', { name: 'Statistics', exact: true }).click();
+  await page.getByRole('button', { name: /Open statistics/ }).click();
   const dialog = page.getByRole('dialog', { name: 'Statistics' });
   await expect(dialog.getByText('Played', { exact: true }).locator('..')).toContainText('11');
   await expect(dialog.getByText('Stats synced across your devices.')).toBeVisible();
@@ -90,7 +90,7 @@ test('sign in with Google, merge local stats into the cloud row, sign out', asyn
   await page.locator('#auth-panel').getByRole('button', { name: 'Sign out' }).click();
   await expect(page.getByRole('button', { name: 'Sign in' })).toBeVisible();
   // stats stay on the device after signing out
-  await page.getByRole('button', { name: 'Statistics', exact: true }).click();
+  await page.getByRole('button', { name: /Open statistics/ }).click();
   await expect(page.getByRole('dialog').getByText('Played', { exact: true }).locator('..')).toContainText('11');
 });
 
