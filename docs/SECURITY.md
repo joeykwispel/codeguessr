@@ -9,12 +9,13 @@ What Codeguessr stores, who can reach it, and how that is enforced and tested. R
 
 ## Data
 
-| Data                        | Where                        | Who can read          | Who can write                    |
-| --------------------------- | ---------------------------- | --------------------- | -------------------------------- |
-| Puzzles                     | `public.puzzles`             | everyone, up to today | only the service role (seeding)  |
-| Stats of a signed-in player | `public.user_stats`, one row | that player           | that player (insert/update only) |
-| Google identity             | `auth.users` (Supabase Auth) | that player           | Supabase Auth                    |
-| Anonymous stats and games   | the player's localStorage    | that browser          | that browser                     |
+| Data                        | Where                         | Who can read                                                             | Who can write                      |
+| --------------------------- | ----------------------------- | ------------------------------------------------------------------------ | ---------------------------------- |
+| Puzzles                     | `public.puzzles`              | everyone, up to today                                                    | only the service role (seeding)    |
+| Stats of a signed-in player | `public.user_stats`, one row  | that player                                                              | that player (insert/update only)   |
+| Google identity             | `auth.users` (Supabase Auth)  | that player                                                              | Supabase Auth                      |
+| Leaderboard nickname        | `public.leaderboard_profiles` | that player; the nickname and stats numbers publicly via `leaderboard()` | that player (insert/update/delete) |
+| Anonymous stats and games   | the player's localStorage     | that browser                                                             | that browser                       |
 
 Nothing beyond what Google OAuth provides (id, email, name, avatar URL) is stored about a player, and those stay in `auth.users`; `user_stats` holds only numbers and a date. Deleting the auth user deletes the stats row (`on delete cascade`).
 
@@ -34,14 +35,22 @@ Note: the bundled offline snapshot contains every puzzle, including future ones.
 - No delete policy, and `delete`/`truncate` revoked. `anon` has no privileges at all.
 - Check constraints keep values consistent (`games_won <= games_played`, `max_streak >= streak`, six distribution buckets), and a trigger sets `updated_at` server-side.
 
+**`leaderboard_profiles`** and **`leaderboard()`**
+
+- Opt-in: a row only exists if a signed-in player chose a nickname. RLS on, with `select`, `insert`, `update` and `delete` policies for `authenticated`, all limited to `(select auth.uid()) = user_id`. `anon` has no privileges on the table.
+- Nicknames are 2 to 20 ASCII letters, digits, spaces, dots, dashes or underscores (check constraint), unique regardless of case.
+- The public ranking goes through `public.leaderboard(metric, max_rows)`, a `security definer` function with an empty `search_path`. It returns only rank, nickname and value, never user ids, emails or names, and at most 100 rows. `execute` is granted to `anon` and `authenticated` and revoked from `public`.
+- Stats are written by the players' own browsers, so they can be tampered with. The function caps every value at the number of daily puzzles released so far, which keeps impossible numbers off the board; it does not make the ranking cheat-proof.
+
 ## How it is tested
 
-[`supabase/rls.test.ts`](../supabase/rls.test.ts) runs both migrations on an in-memory Postgres (PGlite) with a minimal copy of Supabase's `auth` schema, roles and `auth.uid()`, and grants everything on public tables to `anon`/`authenticated` like Supabase does, so only the policies protect the data. It then acts as two users and anonymous visitors and proves that:
+[`supabase/rls.test.ts`](../supabase/rls.test.ts) runs the migrations on an in-memory Postgres (PGlite) with a minimal copy of Supabase's `auth` schema, roles and `auth.uid()`, and grants everything on public tables to `anon`/`authenticated` like Supabase does, so only the policies protect the data. It then acts as two users and anonymous visitors and proves that:
 
 - a user can create and read their own row, but cannot read, update, upsert over or insert another user's row, or move their row to someone else;
 - nobody can delete stats through the API roles, and anonymous visitors can't touch stats at all;
 - a request without a user id sees nothing;
-- future puzzles are hidden, and nobody but the service role can write puzzles.
+- future puzzles are hidden, and nobody but the service role can write puzzles;
+- players can only join, rename or leave the leaderboard for themselves, nicknames are validated and unique, anonymous visitors can't read the profiles table, and `leaderboard()` returns only nicknames and numbers for players who opted in.
 
 These run in CI on every pull request (`npm run test:unit`).
 

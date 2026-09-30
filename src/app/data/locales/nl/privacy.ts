@@ -2,7 +2,7 @@ import type { Privacy } from '../en/privacy';
 
 export const privacy: Privacy = {
   title: 'Privacy',
-  updated: 'Laatst bijgewerkt: 25 september 2026',
+  updated: 'Laatst bijgewerkt: 30 september 2026',
   intro:
     'Codeguessr is een gratis puzzelspel, gemaakt door Joey Oosenbrug (Nederland). Je kunt spelen zonder account, en er zijn geen advertenties, geen analytics en geen tracking. Op deze pagina staat precies wat er wordt opgeslagen en waarom.',
   sections: [
@@ -19,6 +19,7 @@ export const privacy: Privacy = {
       paragraphs: [
         'Inloggen is optioneel en dient alleen om je statistieken op je apparaten gelijk te houden. Als je inlogt, deelt Google je account-ID, e-mailadres, naam en profielfoto met de app. Die worden opgeslagen in het inlogsysteem (Supabase Auth) en alleen gebruikt om te tonen wie er is ingelogd.',
         'Je statistieken staan in één databaserij: huidige en langste reeks, de datum waarop je voor het laatst speelde, gespeelde en gewonnen spellen, in hoeveel beurten je won, en wanneer de rij voor het laatst is bijgewerkt. Verder wordt er niets over je opgeslagen, en niemand anders kan het lezen: de database laat je alleen je eigen rij lezen en wijzigen.',
+        'Meedoen met de ranglijst is een aparte, vrijwillige keuze. Als je meedoet, wordt de bijnaam die je kiest bij je account opgeslagen, en worden je bijnaam en je aantal gespeelde spellen, langste reeks en gewonnen spellen openbaar getoond op de ranglijst. Je Google-naam, e-mailadres en foto worden nooit getoond. Je kunt je bijnaam altijd wijzigen of van de ranglijst af gaan; dan wordt de bijnaam direct verwijderd.',
         'De grondslag is je toestemming (AVG artikel 6, lid 1, onder a): je kiest er zelf voor om in te loggen, en je kunt die toestemming altijd intrekken door te vragen of je account wordt verwijderd.'
       ]
     },
@@ -32,7 +33,7 @@ export const privacy: Privacy = {
     {
       heading: 'Hoe lang het wordt bewaard',
       paragraphs: [
-        'Gegevens in je browser blijven staan tot je ze wist. Je account en statistieken blijven bewaard tot je vraagt ze te verwijderen; als je account wordt verwijderd, gaat je statistiekenrij mee.'
+        'Gegevens in je browser blijven staan tot je ze wist. Je account, statistieken en bijnaam op de ranglijst blijven bewaard tot je vraagt ze te verwijderen; als je account wordt verwijderd, gaan je statistiekenrij en bijnaam mee.'
       ]
     },
     {

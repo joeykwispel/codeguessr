@@ -5,7 +5,7 @@ import { locales } from '../data/locales';
 import { I18n } from './i18n';
 import { localize, publicUrl } from './locale-path';
 
-export type SeoPage = 'home' | 'archive' | 'privacy' | 'notFound';
+export type SeoPage = 'home' | 'archive' | 'leaderboard' | 'privacy' | 'notFound';
 
 const ogLocale = { en: 'en_GB', nl: 'nl_NL' } as const;
 
@@ -36,8 +36,13 @@ export class Seo {
     const t = this.i18n.t().meta;
     const locale = this.i18n.locale();
     const path = this.i18n.path();
-    const title = { home: t.title, archive: t.archiveTitle, privacy: t.privacyTitle, notFound: t.notFoundTitle }[page];
-    const description = page === 'archive' ? t.archiveDescription : page === 'privacy' ? t.privacyDescription : t.description;
+    const title = { home: t.title, archive: t.archiveTitle, leaderboard: t.leaderboardTitle, privacy: t.privacyTitle, notFound: t.notFoundTitle }[page];
+    const descriptions: Partial<Record<SeoPage, string>> = {
+      archive: t.archiveDescription,
+      leaderboard: t.leaderboardDescription,
+      privacy: t.privacyDescription
+    };
+    const description = descriptions[page] ?? t.description;
     const url = publicUrl(environment.siteUrl, localize(path, locale));
 
     this.title.setTitle(title);

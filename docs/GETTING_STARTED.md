@@ -45,9 +45,10 @@ Open http://localhost:4200. Without Supabase settings the app runs fully offline
 ## Supabase setup
 
 1. Create a project at [supabase.com](https://supabase.com) (the free tier is plenty).
-2. **Tables and policies.** Open the SQL editor and run the two files in `supabase/migrations/` in order (or use `supabase db push` with the Supabase CLI). They create:
+2. **Tables and policies.** Open the SQL editor and run the files in `supabase/migrations/` in order (or use `supabase db push` with the Supabase CLI). They create:
    - `puzzles`: readable by everyone up to today (UTC), no public writes.
    - `user_stats`: one row per signed-in user; a user can only select, insert and update their own row.
+   - `leaderboard_profiles` and the `leaderboard()` function: players who opt in to the leaderboard with a nickname. Everyone can read the ranking (nicknames and numbers only); a user can only manage their own nickname.
 3. **Keys.** Project Settings → API. Put the project URL and the anon (or publishable) key in `src/environments/environment.ts`. Keep the service role (secret) key for seeding only.
 4. **Seed the puzzles.**
 
