@@ -75,6 +75,7 @@ import { LeaderboardBoard } from './leaderboard-board';
     :host {
       display: grid;
       gap: 1.25rem;
+      container-type: inline-size;
     }
     .intro {
       display: flex;
@@ -120,7 +121,7 @@ import { LeaderboardBoard } from './leaderboard-board';
       gap: 0.75rem 1.5rem;
       padding: 1.25rem;
     }
-    @media (max-width: 680px) {
+    @container (max-width: 640px) {
       .join {
         grid-template-columns: minmax(0, 1fr);
       }
