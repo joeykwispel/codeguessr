@@ -74,3 +74,17 @@ test('future and malformed days are refused', async ({ page }) => {
   await page.goto('/archive/not-a-day');
   await expect(page.getByRole('alert')).toContainText('isn’t a valid puzzle date');
 });
+
+test('works like levels: continue with the oldest unfinished puzzle, then go on to the next one', async ({ page }) => {
+  await page.goto('/archive/');
+  // #1 is in progress, #2-#4 are done, #5 (today) is not played: the continue button starts with #1
+  await expect(page.getByRole('link', { name: /Puzzle #1,/ })).toHaveAttribute('aria-current', 'step');
+  await page.getByRole('link', { name: /Next up.*Play puzzle #1/ }).click();
+  await expect(page).toHaveURL(/\/archive\/2026-09-21$/);
+
+  await guess(page, 'React');
+  await expect(page.getByRole('heading', { name: 'You got it!' })).toBeVisible();
+  await page.getByRole('link', { name: /Next unfinished: puzzle #5/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Puzzle #5' })).toBeVisible();
+  await expect(page.getByRole('note')).toHaveCount(0);
+});
