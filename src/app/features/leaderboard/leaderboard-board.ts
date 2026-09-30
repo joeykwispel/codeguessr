@@ -36,7 +36,7 @@ const icons: Record<Metric, IconName> = { played: 'calendar', streak: 'flame', w
         <button type="button" class="btn" (click)="boards.reload()">{{ i18n.t().play.retry }}</button>
       </div>
     } @else {
-      <div class="grid" [style.--n]="limit()">
+      <div class="grid" [class.sized]="compact() || !boards.hasValue()" [style.--n]="limit()">
         @for (card of cards(); track card.metric) {
           @let id = 'lb-' + card.metric + (compact() ? '-home' : '');
           <article class="card glass" [class]="card.metric" [attr.aria-labelledby]="id">
@@ -94,15 +94,17 @@ const icons: Record<Metric, IconName> = { played: 'calendar', streak: 'flame', w
     }
   `,
   styles: `
+    /* stack by the room the board actually has, not the window: zoom or a narrow column stacks it, a wide one doesn't */
     :host {
       display: block;
+      container-type: inline-size;
     }
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0.75rem;
     }
-    @media (max-width: 680px) {
+    @container (max-width: 700px) {
       .grid {
         grid-template-columns: minmax(0, 1fr);
       }
@@ -112,8 +114,6 @@ const icons: Record<Metric, IconName> = { played: 'calendar', streak: 'flame', w
       display: grid;
       align-content: start;
       gap: 0.625rem;
-      /* same height while loading and when full, so nothing jumps */
-      min-height: calc(3.75rem + var(--n) * 2.75rem);
       padding: 0.875rem 0.75rem 0.75rem;
       overflow: hidden;
     }
@@ -123,6 +123,10 @@ const icons: Record<Metric, IconName> = { played: 'calendar', streak: 'flame', w
       inset: 0 0 auto;
       height: 3px;
       background: linear-gradient(90deg, var(--c), transparent);
+    }
+    /* while loading (and always on the compact home board) cards keep their full height, so nothing jumps */
+    .sized .card {
+      min-height: calc(3.75rem + var(--n) * 2.75rem);
     }
     .card.played {
       --c: var(--syn-fn);

@@ -20,7 +20,7 @@ import { SiteFooter } from './shared/components/site-footer';
     <jo-header [links]="links()" [languages]="languages()" [labels]="labels()">
       <app-header-tools />
     </jo-header>
-    <main #main id="main" tabindex="-1">
+    <main #main id="main" tabindex="-1" [class.wide]="i18n.path() === '/leaderboard'">
       <app-app-bar />
       <router-outlet />
     </main>
@@ -38,6 +38,10 @@ import { SiteFooter } from './shared/components/site-footer';
       margin-inline: auto;
       /* the kit header is fixed, so the page starts below it */
       padding: calc(var(--nav-h) + 1rem) 0 clamp(2.75rem, 6vw, 4.5rem);
+    }
+    /* the leaderboard is a dashboard: it gets more room than the reading column on big screens */
+    main.wide {
+      --column: 1100px;
     }
     main:focus {
       outline: none;
