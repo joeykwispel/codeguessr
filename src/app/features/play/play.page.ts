@@ -13,11 +13,13 @@ import { GuessInput } from './guess-input';
 import { ResultPanel } from './result-panel';
 import { ShareButton } from './share-button';
 import { StatsService } from '../../core/stats.service';
+import { LeaderboardService } from '../../core/leaderboard.service';
+import { LeaderboardBoard } from '../leaderboard/leaderboard-board';
 
 /** Today's puzzle at /, and any past puzzle at /archive/<date> (which never touches the streak). */
 @Component({
   selector: 'app-play-page',
-  imports: [RouterLink, ClueList, GuessInput, GuessHistory, ResultPanel, ShareButton],
+  imports: [RouterLink, ClueList, GuessInput, GuessHistory, ResultPanel, ShareButton, LeaderboardBoard],
   providers: [GameStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -102,11 +104,48 @@ import { StatsService } from '../../core/stats.service';
         }
       </div>
     }
+
+    @if (!archive() && leaderboard.enabled) {
+      <section class="lb" aria-labelledby="lb-home-title">
+        <div class="lb-head">
+          <h2 id="lb-home-title">{{ i18n.t().leaderboard.title }}</h2>
+          <a class="more" [routerLink]="i18n.href('/leaderboard')">{{ i18n.t().leaderboard.viewAll }}&nbsp;<span aria-hidden="true">→</span></a>
+        </div>
+        <app-leaderboard-board [limit]="3" [compact]="true" />
+      </section>
+    }
   `,
   styles: `
     :host {
       display: grid;
       gap: 1.25rem;
+    }
+    .lb {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--border);
+    }
+    .lb-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+    .lb-head h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .more {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      font-weight: 600;
     }
     .intro {
       display: grid;
@@ -190,6 +229,7 @@ export class PlayPage {
   protected readonly i18n = inject(I18n);
   protected readonly store = inject(GameStore);
   protected readonly stats = inject(StatsService);
+  protected readonly leaderboard = inject(LeaderboardService);
   protected readonly fmt = fmt;
   protected readonly isDay = isDay;
   private readonly puzzles = inject(PuzzleService);

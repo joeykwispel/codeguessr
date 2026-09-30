@@ -55,26 +55,37 @@ async function signedIn(page: Page) {
   await page.route('**/rest/v1/user_stats**', (route) => route.fulfill(route.request().method() === 'GET' ? { json: [] } : { status: 201, json: [] }));
 }
 
-test('shows the top players per metric and invites signed-out visitors to join', async ({ page }) => {
+test('shows all three rankings on one screen and invites signed-out visitors to join', async ({ page }) => {
   await setup(page);
   await mockLeaderboard(page);
   await page.goto('/leaderboard/');
 
   await expect(page.getByRole('heading', { level: 1, name: 'Leaderboard' })).toBeVisible();
-  const list = page.getByRole('list', { name: 'Most played' });
-  await expect(list.getByRole('listitem')).toHaveCount(2);
-  await expect(list.getByRole('listitem').first()).toContainText('grace');
-  await expect(list.getByRole('listitem').first()).toContainText('5 played');
+  const played = page.getByRole('list', { name: 'Most played' });
+  await expect(played.getByRole('listitem')).toHaveCount(2);
+  await expect(played.getByRole('listitem').first()).toContainText('grace');
+  await expect(played.getByRole('listitem').first()).toContainText('Rank 1: grace, 5 played');
 
-  await page.getByRole('radio', { name: 'Longest streak' }).check();
   const streak = page.getByRole('list', { name: 'Longest streak' });
   await expect(streak.getByRole('listitem')).toHaveCount(1);
   await expect(streak.getByRole('listitem')).toContainText('3 days');
 
-  await page.getByRole('radio', { name: 'Most wins' }).check();
-  await expect(page.getByText('Nobody has joined yet. Be the first!')).toBeVisible();
-
+  await expect(page.getByRole('article').filter({ hasText: 'Most wins' })).toContainText('No one yet. Be the first!');
   await expect(page.getByRole('button', { name: 'Sign in with Google' })).toBeVisible();
+});
+
+test('today’s puzzle has a compact leaderboard below it, linking to the full one', async ({ page }) => {
+  await setup(page);
+  await mockLeaderboard(page);
+  await page.goto('/');
+
+  const section = page.getByRole('region', { name: 'Leaderboard' });
+  await section.scrollIntoViewIfNeeded();
+  await expect(section.getByRole('heading', { level: 3, name: 'Longest streak' })).toBeVisible();
+  await expect(section.getByRole('list', { name: 'Most played' }).getByRole('listitem')).toHaveCount(2);
+  await section.getByRole('link', { name: /Full leaderboard/ }).click();
+  await expect(page).toHaveURL(/\/leaderboard\/?$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Leaderboard' })).toBeVisible();
 });
 
 test('a signed-in player can join with a nickname, is highlighted, and can leave again', async ({ page }) => {

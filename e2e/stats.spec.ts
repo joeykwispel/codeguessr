@@ -25,7 +25,7 @@ test('a win updates the streak, the stats dialog and the share text', async ({ p
   const text = (await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n');
   expect(text).toBe('Codeguessr #5 2/6 🔥2\n⬛🟩\ncodeguessr.joeyoosenbrug.nl');
 
-  await page.getByRole('button', { name: 'Statistics', exact: true }).click();
+  await page.getByRole('button', { name: /Open statistics/ }).click();
   const dialog = page.getByRole('dialog', { name: 'Statistics' });
   await expect(dialog).toBeVisible();
   await expect(dialog.getByText('Played', { exact: true }).locator('..')).toContainText('2');
@@ -37,7 +37,7 @@ test('a win updates the streak, the stats dialog and the share text', async ({ p
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
   // focus goes back to the button that opened the dialog
-  await expect(page.getByRole('button', { name: 'Statistics', exact: true })).toBeFocused();
+  await expect(page.getByRole('button', { name: /Open statistics/ })).toBeFocused();
 });
 
 test('a loss resets the streak', async ({ page }) => {

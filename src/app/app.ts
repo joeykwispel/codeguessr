@@ -8,15 +8,18 @@ import { localize, publicPath } from './core/locale-path';
 import { locales } from './data/locales';
 import { JO_HEADER_LABELS, JoHeaderComponent, type JoHeaderLanguage, type JoHeaderLink } from './jo/jo-header.component';
 import { AppBar } from './shared/components/app-bar';
+import { HeaderTools } from './shared/components/header-tools';
 import { SiteFooter } from './shared/components/site-footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, JoHeaderComponent, AppBar, SiteFooter],
+  imports: [RouterOutlet, JoHeaderComponent, AppBar, HeaderTools, SiteFooter],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a class="skip" href="#main">{{ i18n.t().nav.skip }}</a>
-    <jo-header [links]="links()" [languages]="languages()" [labels]="labels()" />
+    <jo-header [links]="links()" [languages]="languages()" [labels]="labels()">
+      <app-header-tools />
+    </jo-header>
     <main #main id="main" tabindex="-1">
       <app-app-bar />
       <router-outlet />

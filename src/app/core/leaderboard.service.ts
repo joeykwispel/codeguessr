@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { Supabase } from './supabase.client';
 
 export const metrics = ['played', 'streak', 'wins'] as const;
@@ -28,9 +29,8 @@ export function validNickname(nickname: string): boolean {
 export class LeaderboardService {
   private readonly supabase = inject(Supabase);
 
-  get available(): boolean {
-    return this.supabase.configured;
-  }
+  /** Whether this build has a Supabase project. True during prerendering too, so pages render the same layout. */
+  readonly enabled = !!environment.supabaseUrl && !!environment.supabaseAnonKey;
 
   async top(metric: Metric, limit = 50): Promise<LeaderboardEntry[]> {
     const client = await this.supabase.get();
