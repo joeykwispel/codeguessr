@@ -16,6 +16,13 @@ updates:
       dependencies:
         dependency-type: production
         update-types: [minor, patch]
+    ignore:
+      # TypeScript is pinned by Angular's peer range (e.g. >=6.0 <6.1); bump it with `ng update`
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      # Types must match the lowest supported Node (engines: >=22), not the newest release
+      - dependency-name: '@types/node'
+        update-types: ['version-update:semver-major']
     open-pull-requests-limit: 5
 
   - package-ecosystem: github-actions
