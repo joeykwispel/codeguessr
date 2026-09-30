@@ -18,7 +18,10 @@ interface Item extends PuzzleSummary {
   today: boolean;
 }
 
-/** Every puzzle from launch until today, grouped by month, with what you did on each. */
+/**
+ * Every puzzle from launch until today as levels, grouped by month, with what you did on each, and a button that
+ * continues with the oldest puzzle you haven't finished yet.
+ */
 @Component({
   selector: 'app-archive-page',
   imports: [RouterLink, Icon],
@@ -37,8 +40,24 @@ interface Item extends PuzzleSummary {
       </div>
     } @else if (list.hasValue()) {
       @if (items().length) {
+        @if (next(); as n) {
+          <a class="glass ring continue" [routerLink]="href(n)">
+            <span class="play" aria-hidden="true"><app-icon name="play" /></span>
+            <span class="what">
+              <span class="kicker mono">{{ t.nextUp }}</span>
+              <span class="title">{{ fmt(t.play, { n: n.id }) }}</span>
+              <span class="muted small">{{ n.today ? t.today : dayLabel(n.date) }} · {{ i18n.content().categories[n.category] }}</span>
+            </span>
+          </a>
+        } @else {
+          <p class="glass done"><app-icon name="trophy" /> {{ t.allDone }}</p>
+        }
+
         <div class="bar">
-          <p class="progress">{{ fmt(t.progress, { played: playedCount(), total: items().length }) }}</p>
+          <div class="progress">
+            <p class="mono">{{ fmt(t.progress, { played: playedCount(), total: items().length }) }}</p>
+            <div class="meter" aria-hidden="true"><span [style.width.%]="(playedCount() / items().length) * 100"></span></div>
+          </div>
           <fieldset class="filter">
             <legend class="sr-only">{{ t.filter }}</legend>
             <label [class.on]="!onlyUnplayed()"
@@ -49,38 +68,33 @@ interface Item extends PuzzleSummary {
             >
           </fieldset>
         </div>
+
         @for (month of months(); track month.key) {
           <section [attr.aria-labelledby]="'m-' + month.key">
             <h2 [id]="'m-' + month.key">{{ month.label }}</h2>
-            <ol class="list">
+            <ol class="levels">
               @for (item of month.items; track item.date) {
                 <li>
                   <a
-                    [routerLink]="item.today ? i18n.href('/') : i18n.href('/archive/' + item.date)"
-                    [class]="'item ' + item.status"
+                    [routerLink]="href(item)"
+                    [class]="'level ' + item.status"
+                    [class.next]="item.date === next()?.date"
+                    [class.today]="item.today"
                     [attr.aria-label]="label(item)"
+                    [attr.aria-current]="item.date === next()?.date ? 'step' : null"
                   >
-                    <span class="n mono" aria-hidden="true">#{{ item.id }}</span>
-                    <span class="what" aria-hidden="true">
-                      <span class="date">{{ item.today ? t.today : dayLabel(item.date) }}</span>
-                      <span class="cat muted">{{ i18n.content().categories[item.category] }}</span>
-                    </span>
-                    <span class="status" aria-hidden="true">
+                    <span class="n mono" aria-hidden="true">{{ item.id }}</span>
+                    <span class="date" aria-hidden="true">{{ item.today ? t.today : shortDay(item.date) }}</span>
+                    <span class="mark" aria-hidden="true">
                       @switch (item.status) {
                         @case ('won') {
                           <app-icon name="check" />
-                          {{ fmt(t.won, { n: item.turns }) }}
                         }
                         @case ('lost') {
                           <app-icon name="x" />
-                          {{ t.lost }}
                         }
                         @case ('playing') {
                           <app-icon name="play" />
-                          {{ t.playing }}
-                        }
-                        @default {
-                          {{ t.none }}
                         }
                       }
                     </span>
@@ -96,9 +110,12 @@ interface Item extends PuzzleSummary {
     } @else {
       <div class="skeleton" aria-busy="true">
         <p class="sr-only" role="status">{{ t.loading }}</p>
-        @for (i of [1, 2, 3, 4, 5]; track i) {
-          <div class="sk" aria-hidden="true"></div>
-        }
+        <div class="sk continue-sk" aria-hidden="true"></div>
+        <div class="sk-grid" aria-hidden="true">
+          @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; track i) {
+            <div class="sk"></div>
+          }
+        </div>
       </div>
     }
   `,
@@ -123,6 +140,74 @@ interface Item extends PuzzleSummary {
       color: var(--muted);
       text-transform: capitalize;
     }
+    .continue {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      color: var(--text);
+      text-decoration: none;
+      animation: fade-up 0.6s var(--ease) both;
+      transition:
+        transform 0.25s var(--ease),
+        box-shadow 0.25s;
+    }
+    .continue:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        var(--shadow),
+        0 0 0 4px var(--glow);
+    }
+    .play {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--accent-ink);
+      box-shadow: 0 0 0 6px var(--glow);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    .play app-icon {
+      width: 22px;
+      height: 22px;
+    }
+    @keyframes pulse {
+      50% {
+        box-shadow: 0 0 0 12px transparent;
+      }
+    }
+    .what {
+      display: grid;
+      gap: 0.125rem;
+    }
+    .kicker {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .small {
+      font-size: 0.875rem;
+    }
+    .done {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+    }
+    .done app-icon {
+      color: var(--flame);
+    }
     .bar {
       display: flex;
       align-items: center;
@@ -131,9 +216,26 @@ interface Item extends PuzzleSummary {
       gap: 0.75rem;
     }
     .progress {
-      font-family: var(--mono);
+      display: grid;
+      gap: 0.375rem;
+      min-width: min(100%, 14rem);
+    }
+    .progress p {
       font-size: 0.9rem;
       font-weight: 600;
+    }
+    .meter {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      overflow: hidden;
+    }
+    .meter span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 0.6s var(--ease);
     }
     .filter {
       display: inline-flex;
@@ -170,21 +272,22 @@ interface Item extends PuzzleSummary {
       outline: 3px solid var(--accent-text);
       outline-offset: 2px;
     }
-    .list {
+    .levels {
       list-style: none;
       margin: 0;
       padding: 0;
       display: grid;
-      gap: 0.375rem;
+      grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+      gap: 0.5rem;
     }
-    .item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      min-height: 56px;
-      padding: 0.5rem 0.875rem;
+    .level {
+      position: relative;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 0.125rem;
+      aspect-ratio: 1;
       border: 1px solid var(--border);
-      border-left-width: 4px;
       border-radius: var(--radius-sm);
       background: var(--surface);
       -webkit-backdrop-filter: blur(14px);
@@ -192,50 +295,70 @@ interface Item extends PuzzleSummary {
       color: var(--text);
       text-decoration: none;
       transition:
-        background 0.25s,
-        box-shadow 0.25s;
+        transform 0.2s var(--ease),
+        background 0.2s,
+        box-shadow 0.2s;
     }
-    .item:hover {
+    .level:hover {
+      transform: translateY(-2px);
       background: var(--surface-2);
       box-shadow: 0 0 0 4px var(--glow);
     }
     .n {
-      min-width: 2.5rem;
-      font-weight: 700;
-    }
-    .what {
-      flex: 1;
-      display: grid;
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1;
     }
     .date {
-      font-weight: 600;
-    }
-    .cat {
-      font-size: 0.8125rem;
-    }
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      font-size: 0.875rem;
-      font-weight: 600;
+      font-size: 0.7rem;
       color: var(--muted);
       white-space: nowrap;
     }
-    .won {
-      border-left-color: var(--ok);
+    .mark {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      display: grid;
+      place-items: center;
     }
-    .won .status {
+    .mark app-icon {
+      width: 14px;
+      height: 14px;
+    }
+    .level.won {
+      border-color: color-mix(in srgb, var(--ok) 55%, var(--border));
+      background: var(--ok-soft);
+    }
+    .level.won .mark {
       color: var(--ok);
     }
-    .lost {
-      border-left-color: var(--bad);
+    .level.lost {
+      border-color: color-mix(in srgb, var(--bad) 45%, var(--border));
+      background: var(--bad-soft);
     }
-    .lost .status {
+    .level.lost .mark {
       color: var(--bad);
     }
-    .playing {
-      border-left-color: var(--accent-2);
+    .level.playing {
+      border-style: dashed;
+      border-color: var(--accent-2);
+    }
+    .level.playing .mark {
+      color: var(--accent-2-text);
+    }
+    .level.today .date {
+      color: var(--accent-text);
+      font-weight: 700;
+    }
+    .level.next {
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 4px var(--glow);
+      animation: glow 2.4s ease-in-out infinite;
+    }
+    @keyframes glow {
+      50% {
+        box-shadow: 0 0 0 7px var(--glow);
+      }
     }
     .notice {
       display: grid;
@@ -245,10 +368,20 @@ interface Item extends PuzzleSummary {
     }
     .skeleton {
       display: grid;
-      gap: 0.375rem;
+      gap: 1rem;
+    }
+    .continue-sk {
+      height: 84px;
+    }
+    .sk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+      gap: 0.5rem;
+    }
+    .sk-grid .sk {
+      aspect-ratio: 1;
     }
     .sk {
-      height: 56px;
       border-radius: var(--radius-sm);
       background: var(--surface-2);
     }
@@ -271,13 +404,17 @@ export class ArchivePage {
 
   protected readonly items = computed<Item[]>(() => {
     const history = this.stats.history();
-    return [...(this.list.value() ?? [])].reverse().map((p) => {
+    // oldest first, like levels: #1, #2, #3…
+    return (this.list.value() ?? []).map((p) => {
       const h = history[p.date];
       const saved = h ? null : savedGame(p.date, p.id);
       const status: Status = h ? h.status : saved?.guesses.length ? 'playing' : 'none';
       return { ...p, status, turns: h?.turns ?? 0, today: p.date === this.today };
     });
   });
+
+  /** The first puzzle, oldest first, that isn't finished yet: where the continue button takes you. */
+  protected readonly next = computed(() => this.items().find((i) => i.status !== 'won' && i.status !== 'lost') ?? null);
 
   protected readonly playedCount = computed(() => this.items().filter((i) => i.status === 'won' || i.status === 'lost').length);
 
@@ -296,6 +433,15 @@ export class ArchivePage {
 
   constructor() {
     inject(Seo).set('archive');
+  }
+
+  protected href(item: Pick<Item, 'date' | 'today'>): string {
+    return item.today ? this.i18n.href('/') : this.i18n.href('/archive/' + item.date);
+  }
+
+  protected shortDay(date: string): string {
+    const locale = this.i18n.locale() === 'nl' ? 'nl-NL' : 'en-GB';
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
   }
 
   protected dayLabel(date: string): string {

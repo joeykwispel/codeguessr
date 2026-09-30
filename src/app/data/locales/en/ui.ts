@@ -75,7 +75,8 @@ export const ui = {
     offline: 'You’re offline; this is the bundled copy of the puzzle.',
     invalid: 'That isn’t a valid puzzle date.',
     backToToday: 'Back to today’s puzzle',
-    archiveNote: 'Archive game: it doesn’t count towards your streak or stats.'
+    archiveNote: 'Archive game: it doesn’t count towards your streak or stats.',
+    nextLevel: 'Next unfinished: puzzle #{n}'
   },
   archive: {
     title: 'Archive',
@@ -93,7 +94,10 @@ export const ui = {
     playing: 'In progress',
     none: 'Not played',
     item: 'Puzzle #{n}, {date}, {category}: {status}',
-    back: 'Back to the archive'
+    back: 'Back to the archive',
+    nextUp: 'Next up',
+    play: 'Play puzzle #{n}',
+    allDone: 'All caught up! A new puzzle arrives every day at 00:00 UTC.'
   },
   leaderboard: {
     title: 'Leaderboard',

@@ -13,6 +13,7 @@ import { GuessInput } from './guess-input';
 import { ResultPanel } from './result-panel';
 import { ShareButton } from './share-button';
 import { StatsService } from '../../core/stats.service';
+import { nextUnfinished } from '../../core/levels';
 
 /** Today's puzzle at /, and any past puzzle at /archive/<date> (which never touches the streak). */
 @Component({
@@ -85,6 +86,11 @@ import { StatsService } from '../../core/stats.service';
       } @else {
         <app-result-panel [state]="s" [puzzle]="p" [focusOnShow]="endedHere()" (reload)="reload()">
           <app-share-button [state]="s" [streak]="stats.streak()" />
+          @if (nextLevel(); as n) {
+            <a class="btn next-level" [routerLink]="n.date === today() ? i18n.href('/') : i18n.href('/archive/' + n.date)">
+              {{ fmt(t.nextLevel, { n: n.id }) }}&nbsp;<span aria-hidden="true">→</span>
+            </a>
+          }
         </app-result-panel>
       }
 
@@ -107,6 +113,9 @@ import { StatsService } from '../../core/stats.service';
     :host {
       display: grid;
       gap: 1.25rem;
+    }
+    .next-level {
+      justify-self: start;
     }
     .intro {
       display: grid;
@@ -200,7 +209,7 @@ export class PlayPage {
   /** Route parameter for archive games; empty for today's puzzle. */
   readonly date = input<string>();
 
-  private readonly today = signal(utcDay());
+  protected readonly today = signal(utcDay());
   protected readonly day = computed(() => this.date() ?? this.today());
   protected readonly archive = computed(() => this.day() !== this.today());
   protected readonly valid = computed(() => isDay(this.day()) && this.day() <= this.today());
@@ -209,6 +218,10 @@ export class PlayPage {
   protected readonly error = signal<string | null>(null);
   /** True once the game ended during this visit, so the result gets focus (not when reopening a finished game). */
   protected readonly endedHere = signal(false);
+  /** Once this game is over: the oldest puzzle you haven't finished yet, to continue like the next level. */
+  protected readonly nextLevel = computed(() =>
+    this.store.state()?.status === 'playing' ? null : nextUnfinished(this.stats.history(), this.today(), this.day())
+  );
   protected readonly guessed = computed(() => this.store.state()?.guesses.map((g) => g.value) ?? []);
 
   /** Nothing loads during prerendering: the static page shows the loading state and the browser fills it in. */

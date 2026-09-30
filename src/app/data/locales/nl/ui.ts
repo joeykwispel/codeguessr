@@ -75,7 +75,8 @@ export const ui: UI = {
     offline: 'Je bent offline; dit is de meegeleverde kopie van de puzzel.',
     invalid: 'Dat is geen geldige puzzeldatum.',
     backToToday: 'Terug naar de puzzel van vandaag',
-    archiveNote: 'Archiefspel: telt niet mee voor je reeks of statistieken.'
+    archiveNote: 'Archiefspel: telt niet mee voor je reeks of statistieken.',
+    nextLevel: 'Volgende onafgemaakte: puzzel #{n}'
   },
   archive: {
     title: 'Archief',
@@ -93,7 +94,10 @@ export const ui: UI = {
     playing: 'Bezig',
     none: 'Niet gespeeld',
     item: 'Puzzel #{n}, {date}, {category}: {status}',
-    back: 'Terug naar het archief'
+    back: 'Terug naar het archief',
+    nextUp: 'Volgende',
+    play: 'Speel puzzel #{n}',
+    allDone: 'Helemaal bij! Elke dag om 00:00 UTC komt er een nieuwe puzzel.'
   },
   leaderboard: {
     title: 'Ranglijst',
