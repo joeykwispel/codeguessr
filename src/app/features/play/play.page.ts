@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, effect, inje
 import { isPlatformBrowser } from '@angular/common';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { RouterLink } from '@angular/router';
-import { isDay, utcDay } from '../../core/dates';
+import { addDays, isDay, utcDay } from '../../core/dates';
+import { LAUNCH_DAY } from '../../data/shared/puzzles';
 import { I18n, fmt } from '../../core/i18n';
 import { PuzzleService } from '../../core/puzzle.service';
 import { Seo } from '../../core/seo.service';
@@ -12,6 +13,7 @@ import { GuessHistory } from './guess-history';
 import { GuessInput } from './guess-input';
 import { ResultPanel } from './result-panel';
 import { ShareButton } from './share-button';
+import { Icon } from '../../shared/components/icon';
 import { StatsService } from '../../core/stats.service';
 import { nextUnfinished } from '../../core/levels';
 import { LeaderboardService } from '../../core/leaderboard.service';
@@ -20,7 +22,7 @@ import { LeaderboardBoard } from '../leaderboard/leaderboard-board';
 /** Today's puzzle at /, and any past puzzle at /archive/<date> (which never touches the streak). */
 @Component({
   selector: 'app-play-page',
-  imports: [RouterLink, ClueList, GuessInput, GuessHistory, ResultPanel, ShareButton, LeaderboardBoard],
+  imports: [RouterLink, ClueList, GuessInput, GuessHistory, ResultPanel, ShareButton, LeaderboardBoard, Icon],
   providers: [GameStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -65,6 +67,19 @@ import { LeaderboardBoard } from '../leaderboard/leaderboard-board';
           {{ t.archiveNote }}
           <a [routerLink]="i18n.href('/archive')">{{ i18n.t().archive.back }}</a>
         </p>
+        <nav class="levels" [attr.aria-label]="t.levels">
+          @if (prevDay(); as d) {
+            <a class="btn" [routerLink]="i18n.href('/archive/' + d)" [attr.aria-label]="fmt(t.prevPuzzle, { n: p.id - 1 })"
+              ><span aria-hidden="true">←</span> #{{ p.id - 1 }}</a
+            >
+          }
+          <a class="btn grid-link" [routerLink]="i18n.href('/archive')"><app-icon name="calendar" /> {{ i18n.t().archive.title }}</a>
+          @if (nextDay(); as d) {
+            <a class="btn" [routerLink]="d === today() ? i18n.href('/') : i18n.href('/archive/' + d)" [attr.aria-label]="fmt(t.nextPuzzle, { n: p.id + 1 })"
+              >#{{ p.id + 1 }} <span aria-hidden="true">→</span></a
+            >
+          }
+        </nav>
       }
       @if (puzzle.value()?.source === 'snapshot' && offline()) {
         <p class="banner muted">{{ t.offline }}</p>
@@ -177,6 +192,20 @@ import { LeaderboardBoard } from '../leaderboard/leaderboard-board';
       justify-items: start;
       padding: 1.25rem;
     }
+    .levels {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .levels .btn {
+      font-family: var(--mono);
+    }
+    .levels .grid-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
     .banner a {
       margin-left: 0.25rem;
       font-weight: 600;
@@ -258,6 +287,9 @@ export class PlayPage {
   protected readonly error = signal<string | null>(null);
   /** True once the game ended during this visit, so the result gets focus (not when reopening a finished game). */
   protected readonly endedHere = signal(false);
+  /** Neighbouring puzzles, for stepping through the archive like levels. */
+  protected readonly prevDay = computed(() => (this.archive() && this.day() > LAUNCH_DAY ? addDays(this.day(), -1) : null));
+  protected readonly nextDay = computed(() => (this.archive() && this.day() < this.today() ? addDays(this.day(), 1) : null));
   /** Once this game is over: the oldest puzzle you haven't finished yet, to continue like the next level. */
   protected readonly nextLevel = computed(() =>
     this.store.state()?.status === 'playing' ? null : nextUnfinished(this.stats.history(), this.today(), this.day())

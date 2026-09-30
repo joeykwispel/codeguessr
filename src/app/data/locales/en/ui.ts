@@ -76,7 +76,10 @@ export const ui = {
     invalid: 'That isn’t a valid puzzle date.',
     backToToday: 'Back to today’s puzzle',
     archiveNote: 'Archive game: it doesn’t count towards your streak or stats.',
-    nextLevel: 'Next unfinished: puzzle #{n}'
+    nextLevel: 'Next unfinished: puzzle #{n}',
+    levels: 'Archive puzzles',
+    prevPuzzle: 'Previous puzzle, #{n}',
+    nextPuzzle: 'Next puzzle, #{n}'
   },
   archive: {
     title: 'Archive',
