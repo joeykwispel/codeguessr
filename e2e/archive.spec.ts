@@ -88,3 +88,21 @@ test('works like levels: continue with the oldest unfinished puzzle, then go on 
   await expect(page.getByRole('heading', { level: 1, name: 'Puzzle #5' })).toBeVisible();
   await expect(page.getByRole('note')).toHaveCount(0);
 });
+
+test('an archive game can step to the previous and next puzzle without finishing it', async ({ page }) => {
+  await page.goto('/archive/2026-09-22');
+  const levels = page.getByRole('navigation', { name: 'Archive puzzles' });
+  await levels.getByRole('link', { name: 'Previous puzzle, #1' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Puzzle #1' })).toBeVisible();
+  // #1 is the first puzzle: nothing before it
+  await expect(levels.getByRole('link', { name: /Previous puzzle/ })).toHaveCount(0);
+  await levels.getByRole('link', { name: 'Next puzzle, #2' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Puzzle #2' })).toBeVisible();
+
+  // the puzzle before today leads to today's puzzle, which has no archive navigation
+  await page.goto('/archive/2026-09-24');
+  await levels.getByRole('link', { name: 'Next puzzle, #5' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Puzzle #5' })).toBeVisible();
+  await expect(levels).toHaveCount(0);
+});

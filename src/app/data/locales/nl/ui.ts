@@ -76,7 +76,10 @@ export const ui: UI = {
     invalid: 'Dat is geen geldige puzzeldatum.',
     backToToday: 'Terug naar de puzzel van vandaag',
     archiveNote: 'Archiefspel: telt niet mee voor je reeks of statistieken.',
-    nextLevel: 'Volgende onafgemaakte: puzzel #{n}'
+    nextLevel: 'Volgende onafgemaakte: puzzel #{n}',
+    levels: 'Archiefpuzzels',
+    prevPuzzle: 'Vorige puzzel, #{n}',
+    nextPuzzle: 'Volgende puzzel, #{n}'
   },
   archive: {
     title: 'Archief',
