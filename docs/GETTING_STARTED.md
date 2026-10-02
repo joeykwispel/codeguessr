@@ -86,7 +86,10 @@ Puzzles still come from Supabase, and stats stay in localStorage.
 
 ## Updating the design kit
 
-The files in `src/app/jo/` are copies of [`docs/design-kit`](https://github.com/joeykwispel/Portfolio/tree/main/docs/design-kit) in the portfolio repo. Don't edit them here: change the portfolio, then copy the files over unchanged. Only the `<jo-header>` inputs in `src/app/app.ts` are ours. Prettier and ESLint skip the folder so it stays byte-identical.
+The design comes from the npm package [`@joeykwispel/design-kit`](https://designkit.joeyoosenbrug.nl): `npm update @joeykwispel/design-kit` brings in a new version. Two things here belong to it and are ours to keep in step:
+
+- `src/app/shared/components/jo-header.ts`: the header as an Angular component. The package ships the styles, behaviour and labels; the markup follows the kit's `header.html`.
+- The theme script in `src/index.html`. A static file cannot import it, so it is pasted in. The build fails when it differs from the package's.
 
 ## Adding a puzzle
 
@@ -105,8 +108,7 @@ src/
     core/                 framework-free rules (game, guess, stats, merge, share, dates) + services
     data/                 all content; see the README
     features/             play, archive, stats, auth
-    jo/                   joeyoosenbrug.nl design kit (jo-kit.css, jo-header.*), copied unchanged from the portfolio
-    shared/components/    app bar, footer, icon, countdown
+    shared/components/    app bar, the design kit's header, footer, icon, countdown
 supabase/                 migrations and RLS tests
 scripts/                  build and maintenance scripts
 e2e/                      Playwright tests

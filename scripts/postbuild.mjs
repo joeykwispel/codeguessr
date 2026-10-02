@@ -1,4 +1,5 @@
 // Runs after `ng build` on the static output in dist/codeguessr/browser:
+// 0. Checks that the theme script in index.html is still the design kit's: index.html cannot import it, so it is pasted.
 // 1. Content Security Policy as a <meta> tag (GitHub Pages can't send headers), with a sha256 hash for every
 //    inline script in each page, so scripts never need 'unsafe-inline'. Inline event handlers fail the build.
 // 2. 404.html: the client-rendered shell, so GitHub Pages serves the app for routes that aren't prerendered.
@@ -8,6 +9,7 @@ import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { themeScript } from '@joeykwispel/design-kit/theme-script';
 
 const root = fileURLToPath(new URL('../dist/codeguessr/browser/', import.meta.url));
 const siteUrl = 'https://codeguessr.joeyoosenbrug.nl';
@@ -52,6 +54,11 @@ export function inlineScriptHashes(html) {
 }
 
 const changed = new Set();
+
+if (!readFileSync(join(root, 'index.html'), 'utf8').includes(`<script>${themeScript}</script>`)) {
+  console.error('The theme script in src/index.html is not the one @joeykwispel/design-kit exports. Paste the new themeScript in.');
+  process.exit(1);
+}
 
 for (const file of htmlFiles(root)) {
   let html = readFileSync(file, 'utf8');

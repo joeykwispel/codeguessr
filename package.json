@@ -39,6 +39,7 @@
     "@angular/router": "^22.2.0",
     "@angular/service-worker": "^22.2.0",
     "@angular/ssr": "^22.2.0",
+    "@joeykwispel/design-kit": "^1.0.0",
     "@supabase/supabase-js": "^2.117.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

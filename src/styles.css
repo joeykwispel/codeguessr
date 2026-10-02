@@ -1,9 +1,9 @@
 /* Self-hosted variable fonts (no Google Fonts CDN call) */
 @import '@fontsource-variable/inter';
 @import '@fontsource-variable/jetbrains-mono';
-/* The joeyoosenbrug.nl design kit: tokens, base styles, backdrop, buttons, tags, cards and the header */
-@import './app/jo/jo-kit.css';
-@import './app/jo/jo-header.css';
+/* The joeyoosenbrug.nl design kit (@joeykwispel/design-kit): tokens, base styles, backdrop, buttons, tags, cards and the header */
+@import '@joeykwispel/design-kit/kit.css';
+@import '@joeykwispel/design-kit/header.css';
 /* Angular CDK overlay (dialogs) */
 @import '@angular/cdk/overlay-prebuilt.css';
 
