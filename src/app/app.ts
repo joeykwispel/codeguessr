@@ -6,7 +6,7 @@ import { CloudSync } from './core/cloud-sync.service';
 import { I18n } from './core/i18n';
 import { localize, publicPath } from './core/locale-path';
 import { locales } from './data/locales';
-import { JO_HEADER_LABELS, JoHeaderComponent, type JoHeaderLanguage, type JoHeaderLink } from './jo/jo-header.component';
+import { JO_HEADER_LABELS, JoHeaderComponent, type JoHeaderLanguage, type JoHeaderLink } from './shared/components/jo-header';
 import { AppBar } from './shared/components/app-bar';
 import { HeaderTools } from './shared/components/header-tools';
 import { SiteFooter } from './shared/components/site-footer';

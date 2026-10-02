@@ -29,16 +29,16 @@ Everything works without an account. Signing in with Google adds two optional th
 
 ## How it's built
 
-|           |                                                                                                                                                                                         |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Framework | Angular 22 (standalone components, signals, zoneless), Angular CDK, TypeScript strict with strict templates, plain CSS                                                                  |
-| Design    | The [joeyoosenbrug.nl design kit](https://github.com/joeykwispel/Portfolio/tree/main/docs/design-kit): the portfolio's tokens, backdrop and header, copied unchanged into `src/app/jo/` |
-| Output    | Prerendered static HTML (`@angular/ssr`, `outputMode: static`) on GitHub Pages; archive games are served by the `404.html` app shell                                                    |
-| Data      | Puzzles in Supabase (Postgres), read with the public anon key; a 24-hour localStorage cache and a bundled snapshot as fallback                                                          |
-| Accounts  | Optional Google sign-in through Supabase Auth (PKCE); stats in one `user_stats` row per user, protected by Row Level Security                                                           |
-| i18n      | Route-based (`/` and `/nl/`), with `hreflang` alternates, a per-language `<html lang>` and a generated sitemap                                                                          |
-| Privacy   | Self-hosted fonts, no analytics, no cookie banner needed: the only cookie is the design kit's theme choice. Only your stats are stored, and only if you sign in                         |
-| Security  | Content Security Policy with hashes for every inline script (as a `<meta>` tag, since GitHub Pages can't set headers); RLS tested in CI                                                 |
+|           |                                                                                                                                                                 |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Framework | Angular 22 (standalone components, signals, zoneless), Angular CDK, TypeScript strict with strict templates, plain CSS                                          |
+| Design    | The [joeyoosenbrug.nl design kit](https://designkit.joeyoosenbrug.nl), installed as `@joeykwispel/design-kit`: tokens, backdrop and header                      |
+| Output    | Prerendered static HTML (`@angular/ssr`, `outputMode: static`) on GitHub Pages; archive games are served by the `404.html` app shell                            |
+| Data      | Puzzles in Supabase (Postgres), read with the public anon key; a 24-hour localStorage cache and a bundled snapshot as fallback                                  |
+| Accounts  | Optional Google sign-in through Supabase Auth (PKCE); stats in one `user_stats` row per user, protected by Row Level Security                                   |
+| i18n      | Route-based (`/` and `/nl/`), with `hreflang` alternates, a per-language `<html lang>` and a generated sitemap                                                  |
+| Privacy   | Self-hosted fonts, no analytics, no cookie banner needed: the only cookie is the design kit's theme choice. Only your stats are stored, and only if you sign in |
+| Security  | Content Security Policy with hashes for every inline script (as a `<meta>` tag, since GitHub Pages can't set headers); RLS tested in CI                         |
 
 ```
 src/app/
@@ -49,8 +49,7 @@ src/app/
   features/archive/       the archive list
   features/stats/         statistics dialog
   features/auth/          optional Google sign-in
-  jo/                     the design kit (tokens, header), copied unchanged from the portfolio; don't edit here
-  shared/components/      app bar (streak, stats, sign-in), footer, icons, countdown
+  shared/components/      app bar (streak, stats, sign-in), the design kit's header, footer, icons, countdown
 supabase/migrations/      tables and RLS policies; supabase/rls.test.ts proves them on a real Postgres (PGlite)
 scripts/                  postbuild (CSP, sitemap, 404), seed-puzzles.ts, local preview server, image generator
 e2e/                      Playwright end-to-end and axe accessibility tests

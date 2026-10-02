@@ -1,9 +1,7 @@
 /**
- * JoHeaderComponent: the joeyoosenbrug.nl header for Angular apps (CodeGuessr).
- * Same markup as header.html, same behaviour through jo-header.js. Only the inputs change per app.
- *
- * Put jo-kit.css and jo-header.css in the global styles (angular.json "styles"), and jo-header.js +
- * jo-header.d.ts next to this file.
+ * The joeyoosenbrug.nl header as an Angular component. The design kit (@joeykwispel/design-kit) ships the header's
+ * styles, behaviour and labels; this file is the Angular markup around them, kept the same as the kit's header.html.
+ * Only the inputs change per app. The kit's Ctrl K button is left out: this app has no command menu.
  *
  *   <jo-header
  *     [links]="[{ label: 'Play', routerLink: '/en/play' }, { label: 'Leaderboard', routerLink: '/en/leaderboard' }]"
@@ -14,9 +12,9 @@
  *   </jo-header>
  */
 
-import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, input, output, viewChild } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, input, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { initJoHeader } from './jo-header.js';
+import { headerLabels, initJoHeader, type HeaderLabels, type HeaderLanguage } from '@joeykwispel/design-kit/header';
 
 export interface JoHeaderLink {
   label: string;
@@ -28,46 +26,15 @@ export interface JoHeaderLink {
   current?: boolean;
 }
 
-export interface JoHeaderLanguage {
-  code: string;
-  /** The same page in that language */
-  href: string;
-  current?: boolean;
-}
-
-export interface JoHeaderLabels {
-  home: string;
-  main: string;
-  language: string;
-  toLight: string;
-  toDark: string;
-  menu: string;
-  search: string;
-}
+export type JoHeaderLanguage = HeaderLanguage;
+export type JoHeaderLabels = HeaderLabels;
 
 /** The portfolio's own wording, so every app says the same thing. */
-export const JO_HEADER_LABELS: Record<'en' | 'nl', JoHeaderLabels> = {
-  en: {
-    home: 'joeyoosenbrug.nl',
-    main: 'Main',
-    language: 'Switch language',
-    toLight: 'Switch to light theme',
-    toDark: 'Switch to dark theme',
-    menu: 'Menu',
-    search: 'Command menu'
-  },
-  nl: {
-    home: 'joeyoosenbrug.nl',
-    main: 'Hoofdmenu',
-    language: 'Taal wijzigen',
-    toLight: 'Schakel naar licht thema',
-    toDark: 'Schakel naar donker thema',
-    menu: 'Menu',
-    search: 'Commandomenu'
-  }
-};
+export const JO_HEADER_LABELS = headerLabels;
 
 @Component({
+  // jo-, not app-: the header is the design kit's, the same element on every joeyoosenbrug.nl site
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'jo-header',
   imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -101,14 +68,6 @@ export const JO_HEADER_LABELS: Record<'en' | 'nl', JoHeaderLabels> = {
 
         <div class="jo-nav__tools">
           <ng-content />
-          <button type="button" class="jo-nav__search" [attr.aria-label]="labels().search" aria-keyshortcuts="Control+K Meta+K" [hidden]="!showSearch()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-3.5-3.5" />
-            </svg>
-            <kbd>Ctrl K</kbd>
-          </button>
-
           <div class="jo-nav__lang" role="group" [attr.aria-label]="labels().language">
             @for (l of languages(); track l.code) {
               <a [href]="l.href" [attr.hreflang]="l.code" [attr.aria-current]="l.current ? 'true' : null">{{ l.code.toUpperCase() }}</a>
@@ -191,9 +150,6 @@ export class JoHeaderComponent {
   readonly labels = input<JoHeaderLabels>(JO_HEADER_LABELS.en);
   /** Where the <JO/> logo goes. Always the portfolio unless you have a very good reason. */
   readonly homeHref = input('https://joeyoosenbrug.nl/');
-  /** Shows the Ctrl K button and binds Ctrl/Cmd+K to the `search` output. */
-  readonly showSearch = input(false);
-  readonly search = output<void>();
 
   private readonly root = viewChild.required<ElementRef<HTMLElement>>('root');
   private readonly destroyRef = inject(DestroyRef);
@@ -201,7 +157,7 @@ export class JoHeaderComponent {
   constructor() {
     // Browser only: safe with server-side rendering and prerendering.
     afterNextRender(() => {
-      const destroy = initJoHeader(this.root().nativeElement, this.showSearch() ? { onSearch: () => this.search.emit() } : {});
+      const destroy = initJoHeader(this.root().nativeElement);
       this.destroyRef.onDestroy(destroy);
     });
   }

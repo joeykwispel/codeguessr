@@ -9,13 +9,11 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <!-- The design kit's theme script, exactly as @joeykwispel/design-kit/theme-script exports it (postbuild.mjs checks). -->
+    <!-- prettier-ignore -->
+    <script>try{var m=document.cookie.match(/(?:^|; )jo-theme=(dark|light)/);var t=(m&&m[1])||localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;document.documentElement.classList.add('js')}catch(e){}</script>
     <script>
       try {
-        // the design kit's theme: the jo-theme cookie is shared by every *.joeyoosenbrug.nl app
-        var m = document.cookie.match(/(?:^|; )jo-theme=(dark|light)/);
-        var t = (m && m[1]) || localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
-        document.documentElement.classList.add('js');
         // a reader who chose Dutch before lands on /nl/ instead of the English home page
         if (localStorage.getItem('lang') === 'nl' && location.pathname === '/' && !location.search) location.replace('/nl/' + location.hash);
       } catch (e) {}
